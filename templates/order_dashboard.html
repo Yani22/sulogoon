@@ -1,0 +1,56 @@
+{% extends 'base.html' %} 
+{% load static %} 
+
+{% block content %}
+ 
+<br>
+ <h5>Orders:</h5>
+ <br>
+<div class="row">
+    
+       
+        <hr>
+        
+       
+    <div class="card card-body">
+            
+        <table class="table">
+            <tr>
+                <th>User</th>
+                <th>Quantity</th>
+                <th>Items</th>
+                <th>Date Ordered</th>
+                <th>Address 1</th>
+                <th>Address 2</th>
+                <th>Payment</th>
+                <th>Coupon</th>
+                <th>Being Delivered</th>
+                <th>Received</th>
+                <th>Update</th>
+                <th>Remove</th>
+            </tr>
+
+
+            {% for order, orderItems in objects_list %}   
+
+                <tr>
+                    <td>{{orderItems.user}}</td>
+                    <td>{{orderItems.quantity}}</td>
+                    <td>{{orderItems.item}}</td>
+                    <td>{{order.ordered_date}}</td>
+                    <td>{{order.shipping_address.street_address}}</td>
+                    <td>{{order.shipping_address.apartment_address}}</td>
+                    <td>{{order.payment}}</td>
+                    <td>{{order.coupon}}</td>
+                    <td>{{order.being_delivered}}</td>
+                    <td>{{order.received}}</td>
+                    <td><a class="btn btn-sm btn-info" href="{}">Update</a></td>
+                    <td><a class="btn btn-sm btn-danger" href="{}">Delete</a></td>
+                </tr>
+            {% endfor %}     
+        </table>
+    </div>
+
+</div>
+
+{% endblock %}

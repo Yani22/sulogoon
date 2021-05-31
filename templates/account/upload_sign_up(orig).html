@@ -1,0 +1,234 @@
+{% extends "account/signup.html" %}
+{% load i18n %}
+{% block head_title %}{% trans "Upload" %}{% endblock %}
+{% include "script.html" %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style type="text/css">
+  input {
+    border: 1px solid #ced4da !important;
+  }
+
+  .pindicator {
+    background-color: white;
+    display: flex;
+    margin: 2rem auto 0;
+    width: 30rem;
+  }
+
+  .pindicator .bullet {
+    flex: 1;
+    position: relative;
+    text-align: center;
+    transform-style: preserve-3d;
+  }
+
+  .pindicator .bullet::before,
+  .pindicator .bullet::after {
+    content: '';
+    display: block;
+    position: absolute;
+    height: .5rem;
+    top: 1.25rem;
+    transform: translate3d(0, 0, -1px);
+  }
+
+  .pindicator .bullet::before {
+    background-color: lightgray;
+    width: 100%;
+  }
+
+  .pindicator .bullet::after {
+    background-color: black;
+    transition: opacity .25s ease-out;
+    opacity: 0;
+    width: 100%;
+  }
+
+  .pindicator .bullet:first-child::before,
+  .pindicator .bullet:first-child::after {
+    left: 50%;
+    width: 50%;
+  }
+
+  .pindicator .bullet:last-child::before,
+  .pindicator .bullet:last-child::after {
+    width: 50%;
+  }
+
+  .pindicator .icon {
+    background-color: lightgray;
+    border-radius: 100%;
+    color: transparent;
+    cursor: pointer;
+    font-size: 1.5rem;
+    display: inline-block;
+    height: 2em;
+    line-height: 2;
+    text-align: center;
+    transition: background-color .25s ease-out;
+    width: 2em;
+  }
+
+  .pindicator .text {
+    color: black;
+    font-size: .75rem;
+    margin-top: 1rem;
+    text-transform: uppercase;
+    transition: background-color .25s ease-out;
+  }
+
+  .pindicator .past .icon,
+  .pindicator .current .icon {
+    background-color: black;
+    color: white;
+  }
+
+  .pindicator .past::after,
+  .pindicator .current::after {
+    opacity: 1;
+  }
+
+  .pindicator .past .text,
+  .pindicator .current .text,
+  .pindicator .next .text {
+    color: black;
+  }
+</style>
+
+<div class="container">
+  <div class="pindicator">
+    <div class="bullet past">
+      <span class="icon">1</span>
+      <div class="text">Personal</div>
+    </div>
+    <div class="bullet current">
+      <span class="icon">2</span>
+      <div class="text">Upload</div>
+    </div>
+    <div class="bullet future">
+      <span class="icon">3</span>
+      <div class="text">Address</div>
+    </div>
+  </div>
+
+
+  <h1>{% trans "Upload Images" %}</h1>
+  <form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    <hr>
+    <div class="mt-5">
+      {{ form.profile_pic|as_crispy_field }}
+      <div class="row gutters-sm">
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Sample Image</strong></h6>
+                <img src="{{request.user.customer.profile_pic.url}}" alt="Valid ID" width="300" height="200">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Chosen Image</strong></h6>
+                <div id="image_box" style="width: 300px; height: 200px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5">
+      {{ form.validid_pic|as_crispy_field }}
+      <div class="row gutters-sm">
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Sample Image</strong></h6>
+                <img src="{{request.user.customer.validid_pic.url}}" alt="Valid ID" width="300" height="200">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Chosen Image</strong></h6>
+                <div id="img_validbox" style="width: 300px; height: 200px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-5">
+      {{ form.faceid_pic|as_crispy_field }}
+      <div class="row gutters-sm">
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Sample Image</strong></h6>
+                <img src="{{request.user.customer.faceid_pic.url}}" alt="Valid ID" width="300" height="200">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6 mb-3">
+          <div class="card h-100">
+            <div class="card-body">
+              <div class="d-flex flex-column align-items-center text-center">
+                <h6 class="d-flex align-items-center mb-3"><strong>Chosen Image</strong></h6>
+                <div id="img_fcidbox" style="width: 300px; height: 200px;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <button type="submit" name="btn2" class="btn btn-primary">{% trans "Upload" %} &raquo;</button>
+    <hr><br><br>
+  </form>
+
+</div>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+
+  const imageBox = document.getElementById('image_box')
+  const input1 = document.getElementById('id_profile_pic')
+  input1.addEventListener('change', () => {
+    const img_data1 = input1.files[0]
+    const url1 = URL.createObjectURL(img_data1)
+    imageBox.innerHTML = `<img src="${url1}" id="image1" width="100%" height="100%">`
+  })
+
+  const imgValidBox = document.getElementById('img_validbox')
+  const input2 = document.getElementById('id_validid_pic')
+  input2.addEventListener('change', () => {
+    const img_data2 = input2.files[0]
+    const url2 = URL.createObjectURL(img_data2)
+    imgValidBox.innerHTML = `<img src="${url2}" id="image2" width="100%" height="100%">`
+  })
+
+  const imgFcidBox = document.getElementById('img_fcidbox')
+  const input3 = document.getElementById('id_faceid_pic')
+  input3.addEventListener('change', () => {
+    const img_data3 = input3.files[0]
+    const url3 = URL.createObjectURL(img_data3)
+    imgFcidBox.innerHTML = `<img src="${url3}" id="image2" width="100%" height="100%">`
+  })
+</script>
+{% endblock extra_scripts %}

@@ -1,0 +1,294 @@
+{% load static %}
+
+<body>
+    <script>
+        NProgress.configure({ showSpinner: false });
+        NProgress.start();
+    </script>
+  
+    <!--====================================
+            ——— LEFT SIDEBAR WITH FOOTER
+            =====================================-->
+    <aside class="left-sidebar bg-sidebar">
+        <div id="sidebar" class="sidebar sidebar-with-footer">
+            <!-- Aplication Brand -->
+            <div class="app-brand">
+                <a href="/partner_dashboard/" title="Dashboard">
+                    <svg class="brand-icon" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid" width="30" height="33" viewBox="0 0 30 33">
+                        <g fill="none" fill-rule="evenodd">
+                            <path class="logo-fill-blue" fill="#7DBCFF" d="M0 4v25l8 4V0zM22 4v25l8 4V0z"/>
+                            <path class="logo-fill-white" fill="#FFF" d="M11 4v25l8 4V0z" />
+                        </g>
+                    </svg>
+                    <span class="brand-name text-truncate">Dashboard</span>
+                </a>
+            </div>
+            <!-- begin sidebar scrollbar -->
+            <div class="sidebar-scrollbar">
+    
+                <!-- sidebar menu -->
+                <ul class="nav sidebar-inner" id="sidebar-menu"> 
+                    <li  class="has-sub" >
+                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#dashboard" aria-expanded="false" aria-controls="dashboard">
+                            <i class="mdi mdi-view-dashboard-outline"></i>
+                            <span class="nav-text">Dashboard</span> 
+                            <b class="caret"></b>
+                        </a>
+                        <ul  class="collapse"  id="dashboard" data-parent="#sidebar-menu">
+                            <div class="sub-menu">
+                                <li >
+                                    <a class="sidenav-item-link" href="/">
+                                        <span class="nav-text">Sulogoon Website</span>
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                    </li>
+
+                    <li class="has-sub" >
+                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#app" aria-expanded="false" aria-controls="app">
+                            <i class="mdi mdi-pencil-box-multiple"></i>
+                            <span class="nav-text">Orders</span> 
+                            <b class="caret"></b>
+                        </a>
+
+                        <ul class="collapse"  id="app" data-parent="#sidebar-menu">
+                            <div class="sub-menu">
+                                <li >
+                                    <a class="sidenav-item-link" href="/partner_all_order">
+                                        <span class="nav-text">All Orders</span>
+                                        <span class="badge badge-success">{{total_orders}}</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a class="sidenav-item-link" href="/partner_pending_order/">
+                                        <span class="nav-text">Pending</span>
+                                        <span class="badge badge-success">{{pending}}</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a class="sidenav-item-link" href="/partner_ongoing_order/">
+                                        <span class="nav-text">On Going</span>
+                                        <span class="badge badge-success">{{ongoing}}</span>
+                                    </a>
+                                </li>
+                                <li >
+                                    <a class="sidenav-item-link" href="/partner_delivered_order/">
+                                        <span class="nav-text">Delivered</span>
+                                        <span class="badge badge-success">{{delivered}}</span>
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                    </li>
+
+                    <li  class="has-sub" >
+                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#pages" aria-expanded="false" aria-controls="pages">
+                            <i class="mdi mdi-file-cabinet"></i>
+                            <span class="nav-text">Products</span>
+                            <b class="caret"></b>
+                        </a>
+                        <ul  class="collapse"  id="pages" data-parent="#sidebar-menu">
+                            <div class="sub-menu">
+                                <li >
+                                    <a class="sidenav-item-link" href="/partner_items">
+                                        <span class="nav-text">Items</span>
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                  </li>
+
+                    <li class="has-sub" >
+                        <a class="sidenav-item-link" href="javascript:void(0)" data-toggle="collapse" data-target="#sett" aria-expanded="false" aria-controls="sett">
+                            <i class="mdi mdi-hammer"></i>
+                            <span class="nav-text">Settings</span> 
+                            <b class="caret"></b>
+                        </a>
+                        <ul  class="collapse"  id="sett" data-parent="#sidebar-menu">
+                            <div class="sub-menu">
+                                <li  class="has-sub" >
+                                    <a class="sidenav-item-link" href="/partner_profile/"
+                                        aria-expanded="false" aria-controls="sett">
+                                        <span class="nav-text">Manage</span>
+                                    </a>
+                                </li>
+                            </div>
+                        </ul>
+                    </li>
+        </div>
+    </aside>
+
+    <!-- Header -->
+    <header class="main-header " id="header">
+        <nav class="navbar navbar-static-top navbar-expand-lg">
+            <!-- Sidebar toggle button -->
+            <button id="sidebar-toggler" class="sidebar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+            </button>
+            <!-- search form -->
+            <div class="search-form d-none d-lg-inline-block">
+                <h2>Dashboard</h2>
+            </div>
+            <div class="navbar-right ">
+                <ul class="nav navbar-nav">
+                    <li class="dropdown notifications-menu">
+                        <button class="dropdown-toggle" data-toggle="dropdown">
+                            <i class="mdi mdi-bell-outline"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <li class="dropdown-header">You have 5 notifications</li>
+                            <li>
+                                <a href="#">
+                                    <i class="mdi mdi-account-plus"></i> New user registered
+                                    <span class=" font-size-12 d-inline-block float-right"><i class="mdi mdi-clock-outline"></i> 10 AM</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="mdi mdi-account-remove"></i> User deleted
+                                    <span class=" font-size-12 d-inline-block float-right"><i class="mdi mdi-clock-outline"></i> 07 AM</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="mdi mdi-chart-areaspline"></i> Sales report is ready
+                                    <span class=" font-size-12 d-inline-block float-right"><i class="mdi mdi-clock-outline"></i> 12 PM</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="mdi mdi-account-supervisor"></i> New client
+                                    <span class=" font-size-12 d-inline-block float-right"><i class="mdi mdi-clock-outline"></i> 10 AM</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#">
+                                    <i class="mdi mdi-server-network-off"></i> Server overloaded
+                                    <span class=" font-size-12 d-inline-block float-right"><i class="mdi mdi-clock-outline"></i> 05 AM</span>
+                                </a>
+                            </li>
+                            <li class="dropdown-footer">
+                                <a class="text-center" href="#"> View All </a>
+                            </li>
+                        </ul>
+                    </li>
+                    <li class="right-sidebar-in right-sidebar-2-menu">
+                        <i class="mdi mdi-settings mdi-spin"></i>
+                    </li>
+                    <!-- User Account -->
+                    <li class="dropdown user-menu">
+                        <button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+                            {% if request.user.partnerstore.profile_pic %}
+                                <img src="{{request.user.partnerstore.profile_pic.url}}" class="user-image" alt="User Image" />
+                            {% endif %}
+                            {% if request.user.partnerstore.first_name %}
+                                <span class="d-none d-lg-inline-block">{{request.user.partnerstore.first_name}} {{request.user.partnerstore.last_name}}</span>
+                            {% endif %}
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-right">
+                            <!-- User image -->
+                            <li class="dropdown-header">
+                                {% if request.user.partnerstore.profile_pic %}
+                                    <img src="{{request.user.partnerstore.profile_pic.url}}" class="img-circle" alt="User Image" />
+                                {% endif %}
+                                <div class="d-inline-block">
+                                    {% if request.user.partnerstore.first_name %}
+                                        {{request.user.partnerstore.first_name}} {{request.user.partnerstore.last_name}} <small class="pt-1">{{request.user.partnerstore.email}}</small>
+                                    {% endif %}
+                                </div>
+                            </li>
+                            <li>
+                                <a href="/partner_profile/">
+                                    <i class="mdi mdi-account"></i> My Profile
+                                </a>
+                            </li>
+                    
+                            <li class="right-sidebar-in">
+                                <a href="javascript:0"> <i class="mdi mdi-settings"></i> Setting </a>
+                            </li>
+                            <li class="dropdown-footer">
+                                <a href="/accounts/logout"> <i class="mdi mdi-logout"></i> Log Out </a>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <div class="right-sidebar-2">
+        <div class="right-sidebar-container-2">
+          <div class="slim-scroll-right-sidebar-2">
+    
+          <div class="right-sidebar-2-header">
+            <h2>Layout Settings</h2>
+            <p>User Interface Settings</p>
+            <div class="btn-close-right-sidebar-2">
+              <i class="mdi mdi-window-close"></i>
+            </div>
+          </div>
+    
+          <div class="right-sidebar-2-body">
+            <span class="right-sidebar-2-subtitle">Header Layout</span>
+            <div class="no-col-space">
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 header-fixed-to btn-right-sidebar-2-active">Fixed</a>
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 header-static-to">Static</a>
+            </div>
+    
+            <span class="right-sidebar-2-subtitle">Sidebar Layout</span>
+            <div class="no-col-space">
+              <select class="right-sidebar-2-select" id="sidebar-option-select">
+                <option value="sidebar-fixed">Fixed Default</option>
+                <option value="sidebar-fixed-minified">Fixed Minified</option>
+                <option value="sidebar-fixed-offcanvas">Fixed Offcanvas</option>
+                <option value="sidebar-static">Static Default</option>
+                <option value="sidebar-static-minified">Static Minified</option>
+                <option value="sidebar-static-offcanvas">Static Offcanvas</option>
+              </select>
+            </div>
+    
+            <span class="right-sidebar-2-subtitle">Header Background</span>
+            <div class="no-col-space">
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 btn-right-sidebar-2-active header-light-to">Light</a>
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 header-dark-to">Dark</a>
+            </div>
+    
+            <span class="right-sidebar-2-subtitle">Navigation Background</span>
+            <div class="no-col-space">
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 btn-right-sidebar-2-active sidebar-dark-to">Dark</a>
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 sidebar-light-to">Light</a>
+            </div>
+    
+            <span class="right-sidebar-2-subtitle">Direction</span>
+            <div class="no-col-space">
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 btn-right-sidebar-2-active ltr-to">LTR</a>
+              <a href="javascript:void(0);" class="btn-right-sidebar-2 rtl-to">RTL</a>
+            </div>
+    
+            <div class="d-flex justify-content-center" style="padding-top: 30px">
+              <div id="reset-options" style="width: auto; cursor: pointer" class="btn-right-sidebar-2 btn-reset">Reset
+                Settings</div>
+            </div>
+    
+          </div>
+    
+        </div>
+      </div>
+    
+    </div>
+
+    <script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/slimscrollbar/jquery.slimscroll.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jekyll-search.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/charts/Chart.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jvectormap/jquery-jvectormap-2.0.3.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/jvectormap/jquery-jvectormap-world-mill.js' %}"></script>
+    <script src="{% static 'assets/plugins/daterangepicker/moment.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/daterangepicker/daterangepicker.js' %}"></script>
+    <script src="{% static 'assets/plugins/data-tables/jquery.datatables.min.js' %}"></script>
+    <script src="{% static 'assets/plugins/data-tables/datatables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'assets/js/sleek.bundle.js' %}"></script>
+</body>
+
+

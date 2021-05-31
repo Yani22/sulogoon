@@ -1,0 +1,403 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<!-- Header desktop -->
+<div class="container-menu-header">
+    <div class="topbar">
+      <span class="topbar-child1">
+        {{ mydate }}
+      </span>     
+    </div>
+    
+    <div class="wrap_header">
+        <!-- Logo -->
+      <a href="#" class="logo">
+        <p style="color: black; "><b style="font-size: 22px;">S</b>ULOGOON</p>
+      </a>
+  
+        <!-- Menu -->
+        <div class="wrap_menu">
+            <nav class="menu">
+                <ul class="main_menu">
+                    <li>
+                        <a href="/admin_dashboard/"><strong>Dashboard</strong></a>
+                    </li>
+                    <li>
+                      <a href="/admin_account_settings/"><strong>Settings</strong></a>
+                  </li>
+                    <li>
+                        <a href="/register_dispatcher/"><strong>Add Dispatcher</strong></a>
+                    </li>   
+                    <li>
+                        <a href="/register_partner/"><strong>Add Partner</strong></a>
+                    </li>
+                    <li>
+                        <a href="/register_rider/"><strong>Add Rider</strong></a>
+                    </li>    
+                    <li>
+                      <a href="/register_admin/"><strong>Add Admin</strong></a>
+                  </li>
+                    <li>
+                        <a href="{% url 'account_logout' %}">Logout</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+    
+
+<style>
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4cb4c7;
+  color: white;
+}
+
+body{
+        background-color: #ebeff5;
+    }
+    #total-orders{
+        background-color: #4cb4c7;
+    }
+    #orders-delivered{
+        background-color: #7abecc;
+    }
+    #orders-pending{
+        background-color: #7CD1C0;
+    }
+
+    .image {
+          max-width: 100px;
+          max-height: 100px;
+          margin: 0 auto;
+        }
+
+</style>
+
+<br>
+<div class="card card-body">
+    
+    <table style="text-align: center;" id="customers">
+        <tr>   
+            <th style="text-align: center;">Available Riders</th>
+        </tr>
+
+        {% for riders in riders %}
+            {% if riders.status == "Available" %}
+                <tr>  
+                    <td>{{riders.first_name}}</td>
+                </tr>
+            {% endif %}
+        {% endfor %}   
+    </table>
+</div>
+    
+<br>
+<hr>
+<nav class="menu">
+    <ul class="main_menu">
+        <li><a id="btnPending" class="btn btn-primary" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>Pending</strong></a></li>
+        <li><a id="btnOngoing" class="btn btn-primary btn-lg btn-block" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>On Going</strong></a></li>
+        <li><a id="btnDelivered" class="btn btn-primary btn-lg btn-block" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>Delivered</strong></a></li>
+    </ul>
+</nav>
+
+<div id="pnd" class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>Pending Order</strong></h4>
+
+            {% for order in orders %}
+                {% if order.status == "Pending" %}
+                    <hr style="border: 1px solid;">
+                    <h6>{{order.date_ordered}}</h6><br>
+                    {{order.user.customer.last_name}},
+                    {{order.user.customer.first_name}}, 
+                    {{order.user.customer.middle_name}}<br>
+                    <h6>{{order.user.customer.contact}}</h6>
+                    <hr>
+                    
+                    {% if order.other %}
+                        <h5><strong>Sugo</strong></h5>
+                        <h6>{{order.other.note}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}<br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+
+                        <hr style="border-top: 1px dotted blue;">
+
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button><br><br>
+
+                        <hr style="border: 1px solid;"><br><br>
+
+                    {% else %}
+
+                        {% for items in order.items.all %} 
+                            <h5><strong>{{items.partnerstore.store}}</strong></h5>
+                            <h6>{{items.item.title}}
+                            x {{items.quantity}} - ₱ {{items.item.price}}0</h6>
+                            <img class="image" src="{{items.item.image.url}}"><br><br>
+                        {% endfor %}
+                        <hr>
+                        <h5><strong>Shipping Address</strong></h5>
+                        <h6>
+                        {{order.shipping_address.house_purok_address}}
+                        {{order.shipping_address.barangay}}
+                        {{order.shipping_address.municipality}}
+                        {{order.shipping_address.province}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+
+                        <br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <hr>
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+                        <hr style="border-top: 1px dotted blue;">
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button>
+                        <br><br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="ong" class="container" style="display: none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>On Going Order</strong></h4>
+
+            {% for order in orders %}
+                {% if order.status == "On Going" %}
+                    <hr style="border: 1px solid;">
+                    <h6>{{order.date_ordered}}</h6><br>
+                    {{order.user.customer.last_name}},
+                    {{order.user.customer.first_name}}, 
+                    {{order.user.customer.middle_name}}<br>
+                    <h6>{{order.user.customer.contact}}</h6>
+                    <hr>
+                    
+                    {% if order.other %}
+                        <h5><strong>Sugo</strong></h5>
+                        <h6>{{order.other.note}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}<br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+
+                        <hr style="border-top: 1px dotted blue;">
+
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button><br><br>
+
+                        <hr style="border: 1px solid;"><br><br>
+
+                    {% else %}
+                    
+                        {% for items in order.items.all %} 
+                            <h5><strong>{{items.partnerstore.store}}</strong></h5>
+                            <h6>{{items.item.title}}
+                            x {{items.quantity}} - ₱ {{items.item.price}}0</h6>
+                            <img class="image" src="{{items.item.image.url}}"><br><br>
+                        {% endfor %}
+                        <hr>
+                        <h5><strong>Shipping Address</strong></h5>
+                        <h6>
+                        {{order.shipping_address.house_purok_address}}
+                        {{order.shipping_address.barangay}}
+                        {{order.shipping_address.municipality}}
+                        {{order.shipping_address.province}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+
+                        <br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <hr>
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+                        <hr style="border-top: 1px dotted blue;">
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button>
+                        <br><br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="dlvd" class="container" style="display: none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>Delivered Order</strong></h4>
+
+            {% for order in orders %}
+                {% if order.status == "Delivered" %}
+                    <hr style="border: 1px solid;">
+                    <h6>{{order.date_ordered}}</h6><br>
+                    {{order.user.customer.last_name}},
+                    {{order.user.customer.first_name}}, 
+                    {{order.user.customer.middle_name}}<br>
+                    <h6>{{order.user.customer.contact}}</h6>
+                    <hr>
+                    
+                    {% if order.other %}
+                        <h5><strong>Sugo</strong></h5>
+                        <h6>{{order.other.note}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}<br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+
+                        <hr style="border-top: 1px dotted blue;">
+
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button><br><br>
+
+                        <hr style="border: 1px solid;"><br><br>
+
+                    {% else %}
+                    
+                        {% for items in order.items.all %} 
+                            <h5><strong>{{items.partnerstore.store}}</strong></h5>
+                            <h6>{{items.item.title}}
+                            x {{items.quantity}} - ₱ {{items.item.price}}0</h6>
+                            <img class="image" src="{{items.item.image.url}}"><br><br>
+                        {% endfor %}
+                        <hr>
+                        <h5><strong>Shipping Address</strong></h5>
+                        <h6>
+                        {{order.shipping_address.house_purok_address}}
+                        {{order.shipping_address.barangay}}
+                        {{order.shipping_address.municipality}}
+                        {{order.shipping_address.province}}</h6>
+                        <hr>
+                        <h5><strong>Rider</strong></h5>
+                        <h6>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+
+                        <br>
+                        {{order.rider.contact}}<br>
+                        {{order.rider.status}}</h6>
+                            
+                        <hr>
+                        <h5 style="text-align: right;"><strong>Service Charge:</strong> ₱ {{order.service_charge}}0</h5>
+                        <hr style="border-top: 1px dotted blue;">
+                        <h5 style="text-align: right; color: #0000FF"><strong>Total:</strong> ₱ {{order.total}}0</h5> 
+                        <h5 style="text-align: right;"><strong>Payment Method:</strong> {{ order.payment.payment_choice }}</h5><br>
+                        
+                        <a class="btn btn-primary float-right ml-2" href="{% url 'core:update_order' order.id %}">Update &raquo;</a>
+                        <button class="btn btn-warning float-right ml-2">Cancel &raquo;</button>
+                        <br><br>
+                    {% endif %}
+                {% endif %}
+            {% endfor %}
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+    function showHide(checked){
+      if (checked == true){
+        $("#default").fadeIn();
+      } else {
+        $("#default").fadeOut();
+      }
+    }
+
+    $("#btnPending").on('click', function() {
+        $("#pnd").fadeIn();
+        $("#ong").fadeOut();
+        $("#dlvd").fadeOut();
+    });
+
+    $("#btnOngoing").on('click', function() {
+        $("#ong").fadeIn();
+        $("#pnd").fadeOut();
+        $("#dlvd").fadeOut();
+    });
+
+    $("#btnDelivered").on('click', function() {
+        $("#dlvd").fadeIn();
+        $("#pnd").fadeOut();
+        $("#ong").fadeOut();
+    });
+
+</script>
+{% endblock extra_scripts %}

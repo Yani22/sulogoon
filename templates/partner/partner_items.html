@@ -1,0 +1,233 @@
+{% extends "partner/partner.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style>
+  .image {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto;
+    }
+</style>
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-default">
+              <div class="card-body">
+                <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab" aria-controls="timeline" aria-selected="false">Items</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="att-tab" data-toggle="tab" href="#att" role="tab" aria-controls="att" aria-selected="false">Add Item</a>
+                  </li>
+                </ul>
+
+              <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+                  <div class="mt-5 profile-timeline-media">
+                <div class="hoverable-data-table">
+                  <table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Image</th>
+                        <th>Category</th>
+                        <th>Name</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Description Short</th>
+                        <th>Description Long</th>
+                        <th>Active</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+                    
+                    <tbody>
+                      {% for itms in item %}
+                        <tr>
+                          <td>{{itms.id}}</td>
+                          <td style="padding: 0; width: 1px;"><img class="image" src="{{itms.image.url}}"></td>
+                          <td>{{itms.category}}</td>
+                          <td>{{itms.name}}</td>
+                          <td>{{itms.price}}</td>
+                          <td>{{itms.stock_no}}</td>
+                          <td>{{itms.description_short}}</td>
+                          <td>{{itms.description_long}}</td>
+                          <td>{{itms.is_active}}</td>
+                          <td class="text-right">
+                            <div class="dropdown show d-inline-block widget-dropdown">
+                              <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                <li class="dropdown-item">
+                                  <a href="{% url 'core:update_item' itms.id %}">Update</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+            <div class="tab-pane fade" id="att" role="tabpanel" aria-labelledby="att-tab">
+              <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <br>
+                {{form.category|as_crispy_field}}
+                {{form.name|as_crispy_field}}
+                {{form.price|as_crispy_field}}
+                {{form.stock_no|as_crispy_field}}
+                {{form.description_short|as_crispy_field}}
+                {{form.description_long|as_crispy_field}}
+                {{form.image|as_crispy_field}}
+                {{form.is_active|as_crispy_field}}
+                
+                <hr>
+                <button type="submit" name="att" class="btn btn-primary">Add &raquo;</button>
+              </form>
+            </div>
+              </div>
+              </div>
+              </div>
+              </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+
+  jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+</script>
+{% endblock extra_scripts %}
+
+
+<!--################################################################################
+
+
+  <style>
+    #customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      border-bottom: 1px solid #ddd;
+      width: 100%;
+    }
+    #customers td {
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      background-color: #4cb4c7;
+      color: white;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+    #customers tr:hover {background-color: #ddd;}
+
+    body
+    {background-color: #ebeff5;}
+    #total-orders{background-color: #4cb4c7;}
+    #orders-delivered{background-color: #7abecc;}
+    #orders-pending{background-color: #7CD1C0;}
+
+    .image {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto;
+    }
+  </style>
+
+  <div class="wrap_menu">
+    <nav class="menu">
+      <ul class="main_menu">
+        <li><a href="/partner_dashboard/"><strong>Dashboard</strong></a></li>  
+        <li><a href="/partner_items/"><strong>Items</strong></a></li>
+        <li><a href="/post_item/"><strong>Add Item</strong></a></li> 
+        <li><a href="#"><strong></strong></a></li>                                
+      </ul>
+    </nav>
+  </div>
+
+  <hr>     
+    <div class="card card-body">
+        <h3>Items</h3>
+        <table id="customers">
+            <tr>
+              <th>Image</th>
+              <th>Item</th>
+              <th>Price</th>         
+              <th>Category</th>
+              <th>Stock</th>
+              <th>Attribute</th>
+              <th>Description</th>
+              <th>Description Long</th>
+              <th>Active</th>
+              <th>Update</th>
+            </tr>
+
+            {% for item in item %}   
+                <tr>  
+                    <td style="padding: 0; width: 1px;"><img class="image" src="{{item.image.url}}"></td>
+                    <td>{{item.title}}</td>
+                    <td>₱ {{item.price}}0</td>
+                    <td>{{item.category}}</td>
+                    <td>{{item.stock_no}}</td>
+                    {% for attrs in item.attr.all %}
+                    <td style="display: block;">{{attrs}}</td>
+                    {% endfor %}
+                    <td>{{item.description_short}}</td>
+                    <td>{{item.description_long}}</td>
+                    <td>{{item.is_active}}</td>
+                    <td><a class="btn btn-sm btn-info" href="{% url 'core:update_item' item.id %}">Update &raquo;</a></td>
+                </tr>
+                {% endfor %}
+        </table>
+    </div>
+
+################################################################################-->

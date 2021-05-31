@@ -1,0 +1,45 @@
+{% extends "rider/rider.html" %} 
+{% load static %}
+
+{% block content %}
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+
+      <footer class="footer mt-auto">
+        <div class="copyright bg-white">
+          <p>
+            &copy; <span id="copy-year">2021</span> Copyright Sulogoon Dashboard
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  var d = new Date();
+  var year = d.getFullYear();
+  document.getElementById("copy-year").innerHTML = year;
+
+</script>
+
+{% endblock extra_scripts %}

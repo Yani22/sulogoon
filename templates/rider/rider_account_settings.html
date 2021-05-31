@@ -1,0 +1,377 @@
+{% extends "rider/rider.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<style>
+  .image {
+    display: block;
+    width: 50%;
+    height: auto;
+    border-radius: 50%;
+  }
+
+  #map{
+    height: 500px;
+    width: 100%;
+  }
+
+  input {
+    border: 1px solid #ced4da !important;
+  }
+
+  input[type=text] {
+    border: 1px solid #ced4da !important;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+</style>
+  
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="card-body">
+        <div class="bg-white border rounded">
+          <div class="row no-gutters">
+            <div class="col-lg-4 col-xl-3">
+              <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                <div class="card text-center widget-profile px-0 border-0">
+                  {% if request.user.rider.profile_pic %}
+                    <img class="image card-img mx-auto rounded-circle" src="{{request.user.rider.profile_pic.url}}" alt="User Image">
+                  {% endif %}
+                  <h6 class="py-2 text-dark">{{request.user}}</h6>
+                    <hr>
+                </div>
+                <div class="contact-info pt-4">
+                  <li>
+                    <a style="color: blue;" href="/my_profile/">
+                      <i class="mdi mdi-account"></i> My Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/my_orders/">
+                      <i class="mdi mdi-email"></i> My Orders
+                    </a>
+                  </li>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8 col-xl-9">
+              <div class="profile-content-right py-5">
+                <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="settings-tab" data-toggle="tab" href="#settings" role="tab" aria-controls="settings" aria-selected="false">Profile</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="address-tab" data-toggle="tab" href="#address" role="tab" aria-controls="address" aria-selected="false">Address</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Images</a>
+                  </li>
+                </ul>
+                <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <div class="mt-5">
+                      <div class="row gutters-sm">
+                        <div class="col-sm-6 mb-3">	
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <div class="d-flex flex-column align-items-center text-center">
+                                <h6 class="d-flex align-items-center mb-3"><strong>Valid ID</strong></h6>
+                                {% if request.user.rider.validid_pic %}
+                                  <img src="{{request.user.rider.validid_pic.url}}" alt="Valid ID" width="300" height="200">
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="col-sm-6 mb-3">
+                          <div class="card h-100">
+                            <div class="card-body">
+                              <div class="d-flex flex-column align-items-center text-center">
+                                <h6 class="d-flex align-items-center mb-3"><strong>Face and Valid ID</strong></h6>
+                                {% if request.user.rider.faceid_pic %}    
+                                  <img src="{{request.user.rider.faceid_pic.url}}" alt="Valid ID" width="300" height="200">
+                                {% endif %}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade show active" id="settings" role="tabpanel" aria-labelledby="settings-tab">
+                    <div class="mt-5">
+                      <form method="POST" id="frmInfo" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group row mb-6">
+                          <div class="col-sm-8 col-lg-10">
+                            <div class="custom-file mb-1">
+                              {{form1.profile_pic|as_crispy_field}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.first_name|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.middle_name|as_crispy_field}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="row mb-2">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.last_name|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.suffix|as_crispy_field}}
+                            </div>
+                          </div>
+                        </div>
+                        <hr>
+                        <div class="row mb-2">
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.contact|as_crispy_field}}
+                            </div>
+                          </div>
+                          <div class="col-lg-6">
+                            <div class="form-group">
+                              {{form1.gender|as_crispy_field}}
+                            </div>
+                          </div>
+                        </div>
+                        <div class="form-group mb-4">
+                          {{form1.email|as_crispy_field}}
+                        </div>
+                        <div class="form-group mb-4">
+                          {{form1.status|as_crispy_field}}
+                        </div>
+                        <hr>
+                        <a href="{% url 'core:change_password' %}">Change Password</a>
+                        <div class="d-flex justify-content-end mt-5">
+                          <button type="submit" name="btnProfile" class="btn btn-primary">Update Profile</button>
+                        </div>
+                      </form>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade active" id="address" role="tabpanel" aria-labelledby="address-tab">
+                    <div class="mt-5">
+                      <input class="search-location" id="srchBox" type="text" size="50%" placeholder="Search Location" oninput="onTyping(this)"/>
+                      <ul id="search-result"></ul>
+                      <br>
+                      <form method="POST">
+                        {% csrf_token %}
+                          <input type="hidden" name="lat1" id="lat1" value="{{rider.latitude}}">
+                          <input type="hidden" name="lon1" id="lon1" value="{{rider.longitude}}">
+                          <p>Drag and drop the marker to your location address
+                          or just click/press your location address.</p>
+                          <div id="map"></div>
+                          <br>
+                          
+                          <div class="form-group mb-4">
+                            <input type="text" id="complete_address" name="complete_address" value="{{rider.complete_address}}" required="True" placeholder="Purok, Barangay, City/Municipal, Province..">
+                          </div>
+                          <div class="form-group mb-4">
+                            <input type="text" id="address_line_2" name="address_line_2" value="{{rider.address_line_2}}" placeholder="Street, Building, etc..">
+                          </div>
+                          <p>* The address you provided above will be automatically set as your default delivery address.</p>
+                          <hr>
+                        <button type="submit" onclick="myFunction()" name="btnAddress" class="btn btn-primary">Save Address &raquo;</button>
+                        <hr><br><br>
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer mt-auto">
+          <div class="copyright bg-white">
+            <p> &copy; 
+              <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<script>
+
+jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+      autoUpdateInput: false,
+      singleDatePicker: true,
+      locale: {
+        cancelLabel: 'Clear'
+      }
+    });
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  var lat1 = document.getElementById("lat1").value;
+  var lon1 = document.getElementById("lon1").value;
+  var mymap = L.map('map').setView([7.446954, 125.809437], 13);
+  var marker = L.marker(new L.LatLng(7.446954, 125.809437), {
+                draggable: true
+                }).addTo(mymap);
+
+  jQuery(document).ready(function(event) {
+    if (lat1=="None" && lon1=="None"){
+      mymap.setView(new L.LatLng(7.446954, 125.809437), 13)
+      marker.setLatLng([7.446954, 125.809437])
+    }else{
+      mymap.setView(new L.LatLng(lat1, lon1), 15)
+      marker.setLatLng([lat1, lon1])
+    }
+  });
+  
+  var popup = L.popup();
+  marker.bindPopup("<b>Your address</b>").openPopup();
+  marker.on('dragend', function (e) {
+    var a = marker.getLatLng().lat.toString();
+    var b = marker.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("lat1").value=c; 
+    document.getElementById("lon1").value=d;
+  });
+
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+  }).addTo(mymap);
+
+
+  const resultsWrapperHTML = document.getElementById("search-result")
+
+mymap.on("click", function(e){
+const {lat, lng} = e.latlng
+// regenerate marker position
+marker.setLatLng([lat, lng])
+var a = marker.getLatLng().lat.toString();
+  var b = marker.getLatLng().lng.toString();
+  c = Number(a).toFixed(6);
+  d = Number(b).toFixed(6);
+  marker.bindPopup("<b>Location found.</b>").openPopup();
+  document.getElementById("lat1").value=c; 
+  document.getElementById("lon1").value=d;
+})
+
+// search location handler
+let typingInterval 
+
+// typing handler
+function onTyping(e) {
+clearInterval(typingInterval)
+const {value} = e
+
+typingInterval = setInterval(() => {
+  clearInterval(typingInterval)
+  searchLocation(value)
+}, 500)
+}
+
+// search handler
+function searchLocation(keyword) {
+if(keyword) {
+  // request to nominatim api
+  fetch(`https://nominatim.openstreetmap.org/search?q=${keyword}&format=json`)
+    .then((response) => {
+      return response.json()
+    }).then(json => {
+     // get response data from nominatim
+     console.log("json", json)
+      if(json.length > 0) return renderResults(json)
+      else alert("Location not found.")
+  })
+}
+}
+
+// render results
+function renderResults(result) {
+let resultsHTML = ""
+
+result.map((n) => {
+  resultsHTML += `<li><a href="#" onclick="setLocation(${n.lat},${n.lon})">${n.display_name}</a></li>`
+})
+
+resultsWrapperHTML.innerHTML = resultsHTML
+}
+
+// clear results
+function clearResults() {
+resultsWrapperHTML.innerHTML = ""
+}
+
+// set location from search result
+function setLocation(lat, lon) {
+// set map focus
+mymap.setView(new L.LatLng(lat, lon), 15)
+
+// regenerate marker position
+marker.setLatLng([lat, lon])
+var a = marker.getLatLng().lat.toString();
+  var b = marker.getLatLng().lng.toString();
+  c = Number(a).toFixed(6);
+  d = Number(b).toFixed(6);
+  marker.bindPopup("<b>Location found.</b>").openPopup();
+  document.getElementById("lat1").value=c; 
+  document.getElementById("lon1").value=d;
+// clear results
+clearResults()
+}
+
+jQuery(document).ready(function(event) {
+    // your code here
+    var comAdd = document.getElementById("complete_address");
+    var addLin = document.getElementById("address_line_2");
+    if (comAdd.value=="None"){
+      comAdd.value = "";
+    }
+    if (addLin.value=="None"){
+      addLin.value = "";
+    }
+  });
+  
+    function myFunction() {
+    var lat = document.getElementById("lat1").value;
+    var lon = document.getElementById("lon1").value;
+    if (lat=="None" && lon=="None" ){
+      document.getElementById("srchBox").style = "border: 5px solid red !important;";
+      marker.bindPopup("<b style='color: red; font-size: small;'>Drag me or click on the map...</b>").openPopup();
+      event.preventDefault();
+      alert("Please choose your location...")
+    }
+}
+</script>
+{% endblock extra_scripts %}

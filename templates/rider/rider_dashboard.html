@@ -1,0 +1,448 @@
+{% extends 'base.html' %}
+{% load static %} 
+{% load crispy_forms_tags %}
+{% block content %}
+
+<style>
+  body{background-color: #ebeff5;}
+  .image {
+    max-width: 100px;
+    max-height: 100px;
+    margin: 0 auto;
+  }
+
+</style>
+<link href="https://cdn.materialdesignicons.com/4.4.95/css/materialdesignicons.min.css" rel="stylesheet" />
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="card-body">
+        <div class="bg-white border rounded">
+          <div class="row no-gutters">
+            <div class="col-lg-4 col-xl-3">
+              <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                <div class="card text-center widget-profile px-0 border-0">
+                  {% if request.user.rider.profile_pic %}
+                    <img class="image card-img mx-auto rounded-circle" src="{{request.user.rider.profile_pic.url}}" alt="User Image">
+                  {% endif %}
+                  <h6 class="py-2 text-dark">{{request.user}}</h6>
+                  <h6 class="py-2 text-dark">Status: {{request.user.rider.status}}</h6>
+                  <hr>
+                </div>
+                <div class="contact-info pt-4">
+                  <li>
+                    <a href="/rider_account_settings/">
+                      <i class="mdi mdi-account"></i> My Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a style="color: blue;" href="/rider_dashboard/">
+                      <i class="mdi mdi-email"></i> My Orders
+                    </a>
+                  </li>
+                </div>
+              </div>
+            </div>
+            <div class="col-lg-8 col-xl-9">
+              <div class="profile-content-right py-5">
+                <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><strong>Pending Order ({{pending}})</strong></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="ongoing-tab" data-toggle="tab" href="#ongoing" role="tab" aria-controls="ongoing" aria-selected="false"><strong>On Going Order ({{ongs}})</strong></a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="delivered-tab" data-toggle="tab" href="#delivered" role="tab" aria-controls="delivered" aria-selected="false"><strong>Delivered Order ({{delivered}})</strong></a>
+                  </li>
+                </ul>
+                <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                  <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                    <div class="mt-5">
+                      <div class="hoverable-data-table">
+                        <table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Customer</th>
+                              <th>Sugo</th>
+                              <th>Shipping Address</th>
+                              <th>Charges</th>
+                              <th>Pay via</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+      
+                          <tbody>
+                            {% for pending in pend %}
+                              <tr>    
+                                <td>{{pending.user.customer.first_name}} {{pending.user.customer.middle_name}} {{pending.user.customer.last_name}} {{pending.user.customer.suffix}}<br>
+                                  {{pending.user.customer.contact}}
+                                </td>
+      
+                                {% if pending.other %}
+                                  <td>{{pending.other.note}}</td>
+                                {% else %}
+                                  <td style="display: block;">
+                                    {% for items in pending.items.all %}
+                                      {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                                    {% endfor %}
+                                  </td>
+                                {% endif %}
+                                      
+                                <td>{{pending.shipping_address.house_purok_address}} {{pending.shipping_address.barangay}}<br>
+                                  {{pending.shipping_address.municipality}} {{pending.shipping_address.province}}<br>
+                                </td>   
+                                <td>Service charge: {{pending.service_charge}}</td>
+                                <td>{{pending.payment.payment_choice}}</td>
+                                <td>{{pending.date_ordered}}</td>
+                                <td class="text-right">
+                                  <div class="dropdown show d-inline-block widget-dropdown">
+                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                      <li class="dropdown-item">
+                                        <a href="{% url 'core:rider_order_status' pending.id %}">Edit</a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="ongoing" role="tabpanel" aria-labelledby="ongoing-tab">
+                    <div class="mt-5">
+                      <div class="hoverable-data-table">
+                        <table id="hoverable-data-table1" class="table table-hover nowrap" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Customer</th>
+                              <th>Sugo</th>
+                              <th>Shipping Address</th>
+                              <th>Charges</th>
+                              <th>Pay via</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+      
+                          <tbody>
+                            {% for ongoing in ong %}
+                              <tr>    
+                                <td>{{ongoing.user.customer.first_name}} {{ongoing.user.customer.middle_name}} {{ongoing.user.customer.last_name}} {{ongoing.user.customer.suffix}}<br>
+                                  {{ongoing.user.customer.contact}}
+                                </td>
+      
+                                {% if ongoing.other %}
+                                  <td>{{ongoing.other.note}}</td>
+                                {% else %}
+                                  <td style="display: block;">
+                                    {% for items in ongoing.items.all %}
+                                      {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                                    {% endfor %}
+                                  </td>
+                                {% endif %}
+                                      
+                                <td>{{ongoing.shipping_address.house_purok_address}} {{ongoing.shipping_address.barangay}}<br>
+                                  {{ongoing.shipping_address.municipality}} {{ongoing.shipping_address.province}}<br>
+                                </td>   
+                                <td>Service charge: {{ongoing.service_charge}}</td>
+                                <td>{{ongoing.payment.payment_choice}}</td>
+                                <td>{{ongoing.date_ordered}}</td>
+                                <td class="text-right">
+                                  <div class="dropdown show d-inline-block widget-dropdown">
+                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                      <li class="dropdown-item">
+                                        <a href="{% url 'core:rider_order_status' ongoing.id %}">Edit</a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="delivered" role="tabpanel" aria-labelledby="delivered-tab">
+                    <div class="mt-5">
+                      <div class="hoverable-data-table">
+                        <table id="hoverable-data-table2" class="table table-hover nowrap" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>Customer</th>
+                              <th>Sugo</th>
+                              <th>Shipping Address</th>
+                              <th>Charges</th>
+                              <th>Pay via</th>
+                              <th>Date</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+      
+                          <tbody>
+                            {% for delivereds in dlv %}
+                              <tr>    
+                                <td>{{delivereds.user.customer.first_name}} {{delivereds.user.customer.middle_name}} {{delivereds.user.customer.last_name}} {{delivereds.user.customer.suffix}}<br>
+                                  {{delivereds.user.customer.contact}}
+                                </td>
+      
+                                {% if delivereds.other %}
+                                  <td>{{delivereds.other.note}}</td>
+                                {% else %}
+                                  <td style="display: block;">
+                                    {% for items in delivereds.items.all %}
+                                      {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                                    {% endfor %}
+                                  </td>
+                                {% endif %}
+                                      
+                                <td>{{delivereds.shipping_address.house_purok_address}} {{delivereds.shipping_address.barangay}}<br>
+                                  {{delivereds.shipping_address.municipality}} {{delivereds.shipping_address.province}}<br>
+                                </td>   
+                                <td>Service charge: {{delivereds.service_charge}}</td>
+                                <td>{{delivereds.payment.payment_choice}}</td>
+                                <td>{{delivereds.date_ordered}}</td>
+                                <td class="text-right">
+                                  <div class="dropdown show d-inline-block widget-dropdown">
+                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                      <li class="dropdown-item">
+                                        <a href="{% url 'core:rider_order_status' delivereds.id %}">Edit</a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <footer class="footer mt-auto">
+          <div class="copyright bg-white">
+            <p> &copy; 
+              <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+            </p>
+          </div>
+        </footer>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'assets/plugins/slimscrollbar/jquery.slimscroll.min.js' %}"></script>
+<script src="{% static 'assets/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<script src="{% static 'assets/plugins/data-tables/jquery.datatables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/data-tables/datatables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/plugins/nprogress/nprogress.js' %}"></script>
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+  
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table1').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table2').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  var d = new Date();
+    var year = d.getFullYear();
+    document.getElementById("copy-year").innerHTML = year;
+
+</script>
+{% endblock extra_scripts %}
+
+
+
+
+<!--################################################################################
+{ extends 'base.html' %} 
+{% load static } 
+{ block content %}
+
+<style>
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  border-bottom: 1px solid #ddd;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+#customers th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #4CAF50;
+  color: white;
+}
+
+body{
+        background-color: #ebeff5;
+    }
+    #total-orders{
+        background-color: #4cb4c7;
+    }
+    #orders-delivered{
+        background-color: #7abecc;
+    }
+    #orders-pending{
+        background-color: #7CD1C0;
+    }
+</style>
+
+<hr>
+              
+<div class="card card-body">
+    <div class="row">
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white  mb-3" id="total-orders">
+                    <div class="card-header">
+                        <h5 class="card-title"><strong>Total Orders</strong></h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{total_orders}}</strong></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white  mb-3" id="total-orders">
+                    <div class="card-header">
+                        <h5 class="card-title"><strong>Orders Pending</strong></h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{pending}}</strong></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col">
+            <div class="col-md">
+                <div class="card text-center text-white  mb-3" id="total-orders">
+                    <div class="card-header">
+                        <h5 class="card-title"><strong>Orders Delivered</strong></h5>
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title"><strong>{{delivered}}</strong></h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col">
+        <div class="col-md">
+            <div class="card text-center text-white  mb-3" id="orders-delivered">
+                <div class="card-header">
+                    <h5 class="card-title"><strong>My Status</strong></h5>
+                </div>
+                <div class="card-body">
+                    {% for rider in status %}   
+                    <a href="/admin_dashboard/">
+                    <h5 class="card-title"><strong>{{rider.status}}</strong></h5></a>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+   
+        <table id="customers">
+          <tr>
+            <th><strong>Item</strong></th>
+            <th><strong>Delivery Information</strong></th>
+            <th><strong>Service Charge</strong></th>
+            <th><strong>Status</strong></th>
+          </tr>
+
+          {% for order in orders %}   
+            <tr>
+              
+              
+                {% for items in order.items.all %}
+                            <td style="display: block; border-bottom: hidden;border-left: hidden;border-right: hidden;border-bottom: hidden;">
+                            <strong>{{items.quantity}} 
+                            {{items.item}}
+                            in {{items.partnerstore}} - 
+                            ₱ {{items.item.price}}</strong><br></td>
+                        {% endfor %}
+
+                <td><strong>{{order.user.customer.last_name}},
+                        {{order.user.customer.first_name}}, 
+                        {{order.user.customer.middle_name}}<br>
+                        {{order.user.customer.contact}}<br>
+                        {{order.shipping_address.street_address}}, 
+                        {{order.shipping_address.apartment_address}}</strong></td>
+                        <td><strong>₱ {{order.service_charge}}0</strong></td>
+
+                        
+                        <td><strong>{{order.status}}</strong>
+              <a class="btn btn-sm btn-info" href="{% url 'core:rider_order_status' order.id %}">Update</a></td>
+
+            </tr>
+            {% endfor %}     
+        </table>
+         <h4 style="text-align: right;"><strong>TOTAL: ₱ {{total}}0</strong></h4> 
+</div>
+{% endblock }
+################################################################################-->

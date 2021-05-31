@@ -1,0 +1,220 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load category_template_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div id="product-category" class="container">
+	<ul class="breadcrumb">
+		<li><a href="/">home</a></li>
+		<li><a href="/shop/">Shop</a></li>
+	</ul>
+	<div class="row">
+		<aside id="column-left" class="col-sm-3 hidden-xs">
+			<div class="category-list">
+				<div class="box-category">
+					<h3 class="toggled relative">Categories</h3>
+					<ul class="list-unstyled parent" id="selectMe-desk">
+						<li class="has-more-category">
+							{% for cat in cat %}
+							<a href="#" class="list-group-item main-item">{{cat.title}}<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for res in res %}
+								<li>
+									<a href="{{res.get_absolute_url}}" class="list-group-item">{{res.store}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+							{% endfor %}
+						</li>
+						<li class="has-more-category">
+							<a href="#" class="list-group-item main-item">Food<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for a in item_cat %}
+								<li>
+									<a href="{{a.get_absolute_url}}" class="list-group-item">{{a.title}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+						</li>
+						<li class="">
+							<a href="/others/" class="list-group-item ">Others<span></span></a>
+					</ul>
+				</div>
+			</div>
+
+			<script>
+				$(function () {
+					$(".parent .fa.fa-plus").remove();
+					$(".parent .toggled").append("<i class='fa fa-plus'></i>");
+					$('.parent .toggled').click(function (e) {
+						e.preventDefault();
+						if (!$(this).parent().hasClass('active')) {
+							$('+ ul', $('a.list-group-item.main-item')).slideUp();
+							$('a.list-group-item.main-item').removeClass('active');
+						}
+						$(this).parent().toggleClass('active');
+						$('+ ul', $(this).parent()).slideToggle('slow');
+						return false;
+					});
+				});
+			</script>
+		</aside>
+
+		<div id="content" class="col-sm-9">
+			<h2 class="page_title">Shop</h2>
+			<div class="row">
+				<div class="col-sm-12"><img src="{% static 'image/sulogoon/banner.png' %}" alt="Shop" title="Shop"
+						class="img-thumbnail cat-banner" /></div>
+			</div>
+
+			<div class="cat_info">
+				<div class="row">
+					<div class="col-sm-2 col-xs-5 cat_list_gird">
+						<div class="btn-group btn-group-sm">
+							<button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip"
+								title="Grid"><i class="fa fa-th"></i></button>
+							<button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip"
+								title="List"><i class="fa fa-th-list"></i></button>
+						</div>
+					</div>
+					<div class="col-sm-3 col-xs-6 com-total">
+						<a href="index6431.html?route=product/compare" id="compare-total" class="btn btn-link">Product
+							Compare (0)</a>
+					</div>
+					<div class="col-sm-7 col-xs-12 cat-pagination-right">
+						<div class="cat-sort">
+							<div class="text-right show-text clearfix">
+								<label class="control-label text_sort" for="input-sort">Sort By:</label>
+							</div>
+							<div class="text-right show-select clearfix">
+								<div class="select-filter-sort">
+									<select id="input-sort" class="form-control sort-order"
+										onchange="location = this.value;">
+										<option
+											value="https://opencart.mahardhi.com/MT03/food/index.php?route=product/category&amp;path=25&amp;sort=p.sort_order&amp;order=ASC"
+											selected="selected">Default</option>
+										<option
+											value="indexa0f8.html?route=product/category&amp;path=25&amp;sort=pd.name&amp;order=ASC">
+											Name (A - Z)</option>
+										<option
+											value="indexd979.html?route=product/category&amp;path=25&amp;sort=pd.name&amp;order=DESC">
+											Name (Z - A)</option>
+										<option
+											value="index55e2.html?route=product/category&amp;path=25&amp;sort=p.price&amp;order=ASC">
+											Price (Low &gt; High)</option>
+										<option
+											value="index488f.html?route=product/category&amp;path=25&amp;sort=p.price&amp;order=DESC">
+											Price (High &gt; Low)</option>
+										<option
+											value="indexdab8.html?route=product/category&amp;path=25&amp;sort=rating&amp;order=DESC">
+											Rating (Highest)</option>
+										<option
+											value="index04db.html?route=product/category&amp;path=25&amp;sort=rating&amp;order=ASC">
+											Rating (Lowest)</option>
+										<option
+											value="index159c.html?route=product/category&amp;path=25&amp;sort=p.model&amp;order=ASC">
+											Model (A - Z)</option>
+										<option
+											value="index7257.html?route=product/category&amp;path=25&amp;sort=p.model&amp;order=DESC">
+											Model (Z - A)</option>
+									</select>
+								</div>
+							</div>
+						</div>
+						<div class="cat-show">
+							<div class="text-right show-text clearfix">
+								<label class="control-label text_limit" for="input-limit">Show:</label>
+							</div>
+							<div class="text-right show-select clearfix">
+								<div class="select-filter-show">
+									<select id="input-limit" class="form-control limits-text"
+										onchange="location = this.value;">
+										<option
+											value="https://opencart.mahardhi.com/MT03/food/index.php?route=product/category&amp;path=25&amp;limit=9"
+											selected="selected">9</option>
+										<option value="indexae56.html?route=product/category&amp;path=25&amp;limit=25">
+											25</option>
+										<option value="indexd180.html?route=product/category&amp;path=25&amp;limit=50">
+											50</option>
+										<option value="index970a.html?route=product/category&amp;path=25&amp;limit=75">
+											75</option>
+										<option value="indexf3d8.html?route=product/category&amp;path=25&amp;limit=100">
+											100</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row category-row">
+				{% for a in item %}
+				<div class="product-layout product-list col-xs-12">
+					<div class="product-thumb transition">
+						<div class="image">
+							<a href="{{a.get_absolute_url}}">
+								<img src="{{a.image.url}}" alt="{{a.name}}" title="{{a.name}}" class="img-responsive" />
+								<img class="img-responsive hover-img" src="{{a.image.url}}" title="{{a.name}}"
+									alt="{{a.name}}" />
+							</a>
+
+							<div class="cart_main">
+								<a href="{{ a.get_add_to_cart_url }}">
+									<button type="button" class="addcart" data-toggle="tooltip"
+										title="Add to Cart"></button>
+								</a>
+							</div>
+
+						</div>
+						<div class="thumb-description clearfix">
+							<div class="caption">
+								<div class="desc-inner">
+									<h4 class="product-title"><a
+											href="#"><strong>{{a.store.store}}</strong><br>{{a.name}}</a></h4>
+								</div>
+								<div class="rating">
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+								</div>
+								<p class="description">{{a.description_short}}
+
+									{{a.description_long}}</p>
+								<p class="price">
+									₱{{a.price}}
+								</p>
+
+							</div>
+							<div class="cart_main">
+								<button type="button" class="addcart" title="Add to Cart" onclick="cart.add('45');">Add
+									to Cart</button>
+							</div>
+						</div>
+					</div>
+				</div>
+				{% endfor %}
+			</div>
+			<div class="pro_pagination clearfix">
+				<div class="col-sm-6 text-left">Showing 1 to 9 of 18 (2 Pages)</div>
+				<div class="col-sm-6 text-right">
+					<ul class="pagination">
+						<li class="active"><span>1</span></li>
+						<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">2</a></li>
+						<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">&gt;</a></li>
+						<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">&gt;|</a></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+{% endblock content %}
+
+{% block extra_scripts %}
+{% endblock extra_scripts %}

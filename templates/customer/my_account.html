@@ -1,0 +1,75 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+
+<body class="account-account">
+    <div class="loader"></div>
+    <div id="account-account" class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">home</a></li>
+            <li><a href="/customer/my_account/">My Account</a></li>
+        </ul>
+        <div class="row">
+            <aside id="column-left" class="col-sm-3 hidden-xs">
+                <div class="account-content">
+                    <div class="box-content">
+                        <div class="list-group">
+                            <h3 class="toggled">Account</h3>
+                            <ul class="list-unstyled">
+                                <li><a href="/customer/my_account/" class="list-group-item">My Account</a></li>
+                                <li><a href="/customer/edit_information/" class="list-group-item">Edit Account</a></li>
+                                <li> <a href="{% url 'core:change_password' %}" class="list-group-item">Edit
+                                        password</a>
+                                </li>
+                                <li><a href="/customer/edit_address/" class="list-group-item">Edit Address</a></li>
+                                <li><a href="/customer/order_history/" class="list-group-item">Order History</a></li>
+                                <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=account/logout"
+                                        class="list-group-item">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="box-content">
+                        <h3 class="box-content toggled">Information</h3>
+                        <ul class="list-unstyled">
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=4">About
+                                    Us</a></li>
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=3">Privacy
+                                    Policy</a></li>
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=5">Terms
+                                    &amp; Conditions</a></li>
+                            <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/contact">Contact
+                                    Us</a></li>
+                            <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/sitemap">Site
+                                    Map</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </aside>
+
+            <div id="content" class="col-sm-9">
+                <h2>My Account</h2>
+                <h3 class="account-list-heading">My Account</h3>
+                <ul class="list-unstyled account-list-content">
+                    <li><a href="/customer/edit_information/">Edit your account
+                            information</a></li>
+                    <li> <a href="{% url 'core:change_password' %}">Change your password</a></li>
+                    <li><a href="/customer/edit_address/">Modify your
+                            address</a></li>
+                </ul>
+                <h3 class="account-list-heading">My Orders</h3>
+                <ul class="list-unstyled account-list-content">
+                    <li><a href="/customer/order_history/">View your order
+                            history</a></li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+{% endblock content %}

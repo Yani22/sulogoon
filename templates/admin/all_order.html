@@ -1,0 +1,117 @@
+{% extends "admin/admin.html" %} 
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">							
+	      <div class="row">
+					<div class="col-12">
+						<div class="card card-default">
+							<div class="card-header card-header-border-bottom d-flex justify-content-between">
+								<h2>All Orders</h2>
+							</div>
+
+							<div class="card-body">
+                <div class="hoverable-data-table">
+									<table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+										<thead>
+											<tr>
+                        <th>Customer</th>
+                        <th>Sugo</th>
+                        <th>Shipping Address</th>
+                        <th>Rider</th>
+                        <th>Charges</th>
+                        <th>Total charge</th>
+                        <th>Pay via</th>
+                        <th>Date</th>
+                        <th style="text-align: right;">Dispatch</th>
+											</tr>
+										</thead>
+
+                    <tbody>
+                      {% for order in orders %}
+                        <tr>    
+                          <td>{{order.user.customer.first_name}} {{order.user.customer.middle_name}} {{order.user.customer.last_name}} {{order.user.customer.suffix}}<br>
+                            {{order.user.customer.contact}}
+                          </td>
+
+                          {% if order.other %}
+                            <td>{{order.other.note}}</td>
+                          {% else %}
+                            <td style="display: block;">
+                              {% for items in order.items.all %}
+                                {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                              {% endfor %}
+                            </td>
+                          {% endif %}
+                                
+                          <td>{{order.shipping_address.house_purok_address}} {{order.shipping_address.barangay}}<br>
+                            {{order.shipping_address.municipality}} {{order.shipping_address.province}}<br>
+                          </td>   
+                          <td>{{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}} {{order.rider.suffix}}<br>
+                            {{order.rider.contact}}
+                          </td>
+                          <td>Service charge: {{order.service_charge}}<br>
+                            Other: {{order.surcharge}}
+                          </td>
+                          <td>{{order.total}}</td>
+                          <td>{{order.payment.payment_choice}}</td>
+                          <td>{{order.date_ordered}}</td>
+                          <td><a class="btn btn-primary float-right ml-2 far" style="padding-top: 2px; padding-bottom: 2px; padding-right: 2px; padding-left: 2px;" href="{% url 'core:update_order' pending.id %}">Dispatch</a></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+					</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+  
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  var d = new Date();
+    var year = d.getFullYear();
+    document.getElementById("copy-year").innerHTML = year;
+</script>
+{% endblock extra_scripts %}

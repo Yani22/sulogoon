@@ -1,0 +1,58 @@
+{% extends "admin/admin.html" %} 
+{% include "admin/all_admins.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+<!--
+<div class="modal fade" id="exampleModallarge" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1>Edit</h1>
+      </div>
+      <div class="modal-body">
+
+        
+        <form method="POST" id="info" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form1|crispy }} 
+          <button type="submit" class="btn btn-primary btn-pill">Save Changes</button>
+          <button type="button" id="btn" class="btn btn-danger btn-pill" href="{% url 'core:all_admins' %}" data-dismiss="modal">Close</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+-->
+<div class="wrapper">
+    <div class="page-wrapper">
+      <div class="content-wrapper">
+        <div class="content">
+          <div class="row">
+            <div class="col-12">
+              <div class="card card-default">
+                <div class="card-body">
+                    <form method="POST">
+                        <br>
+                        {% csrf_token %}
+                       
+                        {{ form.is_active|as_crispy_field }}
+                         
+                        <button type="submit" class="btn btn-primary">Save &raquo;</button>
+                    </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <footer class="footer mt-auto">
+        <div class="copyright bg-white">
+          <p> &copy; 
+            <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+          </p>
+        </div>
+      </footer>
+    </div>
+  </div>
+{% endblock content %}

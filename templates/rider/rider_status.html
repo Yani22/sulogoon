@@ -1,0 +1,26 @@
+{% include 'header.html' %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="card text-center">
+  <div class="card-header">
+    <h4>My Status</h4>
+  </div>
+  <div class="card-body">
+    
+    <form method="POST" action="" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ form|crispy }}
+        
+    <input class="btn btn-primary" type="Submit" name="Update Order Status">
+    </form>
+  </div>
+  
+</div>
+
+
+
+
+
+{% endblock content %}

@@ -1,0 +1,131 @@
+{% extends 'admin/pending_order.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-default">
+              <div class="card-body">
+                  <form method="POST">
+                      <br>
+                      {% csrf_token %}
+                      {{ form|crispy }}
+                      <button type="submit" class="btn btn-primary">Save &raquo;</button>
+                  </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+{% endblock content %}
+{% block extra_scripts %}
+<script>
+
+    $(function () {
+        $('#exampleModallarge').modal('show');
+    });
+
+    $(document).on('hidden.bs.modal','#exampleModallarge', function () {
+      window.location = $("#btn").attr("href");
+    });
+</script>
+{% endblock extra_scripts %}
+
+
+
+
+
+
+
+
+<!--################################################################################
+{% include 'header.html' } 
+{ load static %}
+{% load crispy_forms_tags }
+{ block content %}
+
+  <style>
+    #customers {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      border-bottom: 1px solid #ddd;
+      width: 100%;
+    }
+    #customers td {
+      border: 1px solid #ddd;
+      text-align: center;
+    }
+
+    #customers th {
+      border: 1px solid #ddd;
+      padding: 8px;
+      text-align: center;
+      background-color: #4cb4c7;
+      color: white;
+      padding-top: 12px;
+      padding-bottom: 12px;
+    }
+
+    #customers tr:nth-child(even){background-color: #f2f2f2;}
+    #customers tr:hover {background-color: #ddd;}
+
+    body
+    {background-color: #ebeff5;}
+    #total-orders{background-color: #4cb4c7;}
+    #orders-delivered{background-color: #7abecc;}
+    #orders-pending{background-color: #7CD1C0;}
+
+    .image {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto;
+    }
+  </style>
+
+  <div class="wrap_menu">
+    <nav class="menu">
+      <ul class="main_menu">
+        <li><a href="/partner_dashboard/"><strong>Dashboard</strong></a></li>  
+        <li><a href="/partner_items/"><strong>Items</strong></a></li>
+        <li><a href="/post_item/"><strong>Add Item</strong></a></li> 
+        <li><a href="#"><strong></strong></a></li>        
+      </ul>
+    </nav>
+  </div>
+
+  <hr>
+  <div class="container">
+    <div class="row">
+      <div class="col-md-6 mt-5 offset-3">
+        <h3>Update Item</h3>
+        <br>
+        <form method="POST" action="" enctype="multipart/form-data">
+          {% csrf_token %}
+          {{ form|crispy }} 
+          <button type="submit" class="btn btn-primary">Update &raquo;</button>
+          <hr>
+          <br>
+          <br>
+        </form>
+      </div>  
+    </div>
+  </div>
+  <br>
+  <hr>
+{% endblock content }
+################################################################################-->

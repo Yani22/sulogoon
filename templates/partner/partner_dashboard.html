@@ -1,0 +1,539 @@
+{% extends "partner/partner.html" %} 
+{% load multiply_template_tags %}
+{% load static %}
+{% block content %}
+
+
+
+
+<!--##############################################################################
+  <style>
+    body{background-color: #ebeff5;}
+    .image {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto;
+    }
+  </style>
+
+  <link href="https://cdn.materialdesignicons.com/4.4.95/css/materialdesignicons.min.css" rel="stylesheet" />
+  <div class="wrapper">
+    <div class="page-wrapper">
+      <div class="content-wrapper">
+        <div class="card-body">
+          <div class="bg-white border rounded">
+            <div class="row no-gutters">
+              <div class="col-lg-4 col-xl-3">
+                <div class="profile-content-left pt-5 pb-3 px-3 px-xl-5">
+                  <div class="card text-center widget-profile px-0 border-0">
+                    {% if request.user.partnerstore.profile_pic %}
+                      <img class="image card-img mx-auto rounded-circle" src="{{request.user.partnerstore.profile_pic.url}}" alt="User Image">
+                    {% endif %}
+                    <h6 class="py-2 text-dark">{{request.user}}</h6>
+                    <hr>
+                  </div>
+                  <div class="contact-info pt-4">
+                    <li>
+                      <a href="#">
+                        <i class="mdi mdi-account"></i> My Profile
+                      </a>
+                    </li>
+                    <li>
+                      <a style="color: blue;" href="#">
+                        <i class="mdi mdi-email"></i> My Orders
+                      </a>
+                    </li>
+                  </div>
+                </div>
+              </div>
+              <div class="col-lg-8 col-xl-9">
+                <div class="profile-content-right py-5">
+                  <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                    <li class="nav-item">
+                      <a class="nav-link active" id="pending-tab" data-toggle="tab" href="#pending" role="tab" aria-controls="pending" aria-selected="false"><strong>Pending Order ({{pending}})</strong></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="ongoing-tab" data-toggle="tab" href="#ongoing" role="tab" aria-controls="ongoing" aria-selected="false"><strong>On Going Order ({{ongoing}})</strong></a>
+                    </li>
+                    <li class="nav-item">
+                      <a class="nav-link" id="delivered-tab" data-toggle="tab" href="#delivered" role="tab" aria-controls="delivered" aria-selected="false"><strong>Delivered Order ({{delivered}})</strong></a>
+                    </li>
+                  </ul>
+                  <div class="tab-content px-3 px-xl-5" id="myTabContent">
+                    <div class="tab-pane fade show active" id="pending" role="tabpanel" aria-labelledby="pending-tab">
+                      <div class="mt-5">
+                        <div class="hoverable-data-table">
+                          <table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+                            <thead>
+                                <tr>
+                                  <th>Item</th>
+                                  <th>Customer</th>
+                                  <th>Rider</th>
+                                  <th>Charge</th>
+                                  <th>Total</th>
+                                  <th>Date</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                              {% for pending in pend %}
+                                <tr>
+                                  {% for items in pending.items.all %}
+                                    <td style="display: block;">{{items.quantity}}pc. {{items.partnerstore.store}} ({{items.item.title}} {{items.item.price}})</td>
+                                  {% endfor %}
+                                  <td>{{pending.user.customer.first_name}} {{pending.user.customer.middle_name}} {{pending.user.customer.last_name}} {{pending.user.customer.contact}}</td>   
+                                  <td>{{pending.rider.first_name}} {{pending.rider.middle_name}} {{pending.rider.last_name}} {{pending.rider.suffix}} {{pending.rider.contact}}</td>
+                                  <td>{{pending.surcharge}}</td>
+                                  <td>{{pending.total}}</td>
+                                  <td>{{pending.date_ordered}}</td>
+                                </tr>
+                              {% endfor %}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="ongoing" role="tabpanel" aria-labelledby="ongoing-tab">
+                      <div class="mt-5">
+                        <div class="hoverable-data-table">
+                          <table id="hoverable-data-table1" class="table table-hover nowrap" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Item</th>
+                                <th>Customer</th>
+                                <th>Rider</th>
+                                <th>Charge</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                              </tr>
+                            </thead>
+        
+                            <tbody>
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="tab-pane fade" id="delivered" role="tabpanel" aria-labelledby="delivered-tab">
+                      <div class="mt-5">
+                        <div class="hoverable-data-table">
+                          <table id="hoverable-data-table2" class="table table-hover nowrap" style="width:100%">
+                            <thead>
+                              <tr>
+                                <th>Item</th>
+                                <th>Customer</th>
+                                <th>Rider</th>
+                                <th>Charge</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                              </tr>
+                            </thead>
+        
+                            <tbody>
+                              <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                              </tr>
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <footer class="footer mt-auto">
+            <div class="copyright bg-white">
+              <p> &copy; 
+                <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+              </p>
+            </div>
+          </footer>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script src="{% static 'assets/plugins/data-tables/jquery.datatables.min.js' %}"></script>
+<script src="{% static 'assets/plugins/data-tables/datatables.bootstrap4.min.js' %}"></script>
+<script src="{% static 'assets/plugins/daterangepicker/daterangepicker.js' %}"></script>
+<script>
+jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+  
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table1').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table2').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  var d = new Date();
+    var year = d.getFullYear();
+    document.getElementById("copy-year").innerHTML = year;
+</script>
+{% endblock extra_scripts %}
+##############################################################################-->
+
+
+
+
+<!--##############################################################################
+    <br>
+    <div class="wrap_menu">
+        <nav class="menu">
+            <ul class="main_menu">
+                <li><a href="/partner_dashboard/"><strong>Dashboard</strong></a></li>  
+                <li><a href="/partner_items/"><strong>Items</strong></a></li>
+                <li><a href="/post_item/"><strong>Add Item</strong></a></li>
+                <li><a href="#"><strong></strong></a></li>                                
+            </ul>
+        </nav>
+    </div>
+    <hr>
+
+<nav class="menu">
+    <ul class="main_menu">
+        <li><a id="btnPending" class="btn btn-primary" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>Pending</strong></a></li>
+        <li><a id="btnOngoing" class="btn btn-primary btn-lg btn-block" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>On Going</strong></a></li>
+        <li><a id="btnDelivered" class="btn btn-primary btn-lg btn-block" style="font-size: 22px; background-color: #4cb4c7; border: #4cb4c7;"><strong>Delivered</strong></a></li>
+    </ul>
+</nav>
+
+
+<div id="pnd" class="container">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>Pending Order</strong></h4>
+
+            {% for order in order %}
+                {% if order.status == "Pending" %}
+                    <hr style="border: 1px solid;">
+                    {{order.date_ordered}}<br><br>
+                    {% for items in order.items.all %} 
+                        {% if items.partnerstore == request.user.partnerstore %}
+                        <strong>{{items.item.title}}</strong> ({{items.quantity}})<br>
+                        ₱ {{items.item.price}}0<br>
+                        <img class="image" src="{{items.item.image.url}}"><br>
+                        <br>
+                        <br>
+                        Total1: {{order.get_total}}<br><br>
+                        Total2: {{total}}<br><br>
+
+                        {% endif %}
+                    {% endfor %} 
+
+                    <hr>
+
+                    <h5><strong>Customer</strong></h5>
+                    {{order.user.customer.first_name}} {{order.user.customer.middle_name}} {{order.user.customer.last_name}}
+                    <br>{{order.user.customer.contact}}
+                    <hr>
+                    <h5><strong>Rider</strong></h5>
+                    {{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+                    <br>{{order.rider.contact}}
+                    <hr style="border-top: 1px dotted blue;">
+                    <h5 style="text-align: right; color: #0000FF"><strong>Charge: ₱ {{order.surcharge}}0</strong></h5>
+                {% endif %}
+                <button type="submit" class="btn btn-primary">Ready for pick-up &raquo;</button> 
+            {% endfor %}   
+
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="ong" class="container" style="display: none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>On Going Order</strong></h4>
+
+            {% for order in order %}
+                {% if order.status == "On Going" %}
+                    <hr style="border: 1px solid;">
+                    {{order.date_ordered}}<br><br>
+                    {{order.other.note}}
+                    {% for items in order.items.all %} 
+                        {% if items.partnerstore == request.user.partnerstore %}
+                        <strong>{{items.partnerstore.store}}</strong><br>
+                        {{items.item.title}}
+                        x {{items.quantity}} - ₱ {{items.item.price}}0<br>
+                        <img class="image" src="{{items.item.image.url}}"><br>
+                        {% endif %}
+                    {% endfor %}
+                    <hr>
+                    <h5><strong>Shipping Address</strong></h5>
+                    {{order.shipping_address.house_purok_address}}
+                    {{order.shipping_address.barangay}}
+                    {{order.shipping_address.municipality}}
+                    {{order.shipping_address.province}}<br>
+                    <br>
+                    <h5><strong>Rider</strong></h5>
+                    {{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+                    <br>{{order.rider.contact}}
+                    <h5 style="text-align: right; color: #0000FF"><strong>Surcharge: ₱ {{order.surcharge}}0</strong></h5>
+                    <hr style="border-top: 1px dotted blue;">
+                    <h5 style="text-align: right;">Payment Method: {{ order.payment.payment_choice }}</h5><br>
+                {% endif %}
+            {% endfor %}
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="dlvd" class="container" style="display: none;">
+  <div class="row">
+    <div class="col-lg-12">
+      <table class="table">
+        <thead>
+            <h4><strong>Delivered Order</strong></h4>
+            {{iyot}}
+
+            {% for order in order %}
+                {% if order.status == "Delivered" %}
+                    <hr style="border: 1px solid;">
+                    {{order.date_ordered}}<br><br>
+                    {% for items in order.items.all %} 
+                        {% if items.partnerstore == request.user.partnerstore %}
+                        <strong>{{items.partnerstore.store}}</strong><br>
+                        {{items.item.title}}
+                        x {{items.quantity}} - ₱ {{items.item.price}}0<br>
+                        <img class="image" src="{{items.item.image.url}}"><br>
+                        {% endif %}
+                    {% endfor %}
+                    <hr>
+                    <h5><strong>Shipping Address</strong></h5>
+                    {{order.shipping_address.house_purok_address}}
+                    {{order.shipping_address.barangay}}
+                    {{order.shipping_address.municipality}}
+                    {{order.shipping_address.province}}<br>
+                    <br>
+                    <h5><strong>Rider</strong></h5>
+                    {{order.rider.first_name}} {{order.rider.middle_name}} {{order.rider.last_name}}
+                    <br>{{order.rider.contact}}
+                    <h5 style="text-align: right; color: #0000FF"><strong>Surcharge: ₱ {{order.surcharge}}0</strong></h5>
+                    <hr style="border-top: 1px dotted blue;">
+                    <h5 style="text-align: right; color: #0000FF"><strong>Total: ₱ {{order.payment.amount}}0</strong></h5> 
+                    <h5 style="text-align: right;">Payment Method: {{ order.payment.payment_choice }}</h5><br><hr>
+                        <strong>₱ {{ order.get_total }}</strong><br>
+                {% endif %}
+            {% endfor %}
+        </thead>
+      </table>
+    </div>
+  </div>
+</div>
+-->
+
+<!--#######################################################################################
+    <hr>
+    <div class="card card-body">
+        <h3>{{pending}} Pending Orders</h3>
+        <table id="customers">
+            <tr>
+                <th>Order</th>
+                <th>Customer Info</th>
+                <th>Surcharge</th>     
+                <th>Total Fee</th>
+                <th>Rider</th>
+                <th>Status</th>
+            </tr>
+
+            {% for order in order %}
+                {% if order.status == "Pending" %}
+                    <tr>
+                          
+                            {% for items in order.items.all %} 
+                            <td style="display: block; border-bottom: hidden;border-left: hidden;border-right: hidden;border-bottom: hidden;">
+                            <strong>{{items.quantity}} 
+                            {{items.item}}
+                            in {{items.partnerstore}} - 
+                            ₱ {{items.item.price}}</strong><br></td> 
+                            {% endfor %}
+                        
+
+                        <td>
+                            Name: {{order.user.customer.last_name}},
+                            {{order.user.customer.first_name}}, 
+                            {{order.user.customer.middle_name}}<br>
+                            Contact: {{order.user.customer.contact}}<br>               
+                            Address: {{order.shipping_address.barangay}}
+                            {{order.shipping_address.municipality}}
+                        </td>
+
+                        <td>₱ {{order.surcharge}}0</td>
+                        <td>₱ {{order.total}}0</td>
+                        <td>{{ order.rider }} {{ order.rider.contact }}</td>
+                        <td>{{ order.status }}</td>                    
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <br>
+    <div class="card card-body">
+        <h3>{{ongoing}} On Going Orders</h3>
+        <table id="customers">
+            <tr>
+                <th>Order</th>
+                <th>Customer Info</th>
+                <th>Surcharge</th>     
+                <th>Total Fee</th>
+                <th>Rider</th>
+                <th>Status</th>
+            </tr>
+
+            {% for order in order %}
+                {% if order.status == "On Going" %}
+                    <tr>
+                        {% for items in order.items.all %}     
+                            <td><strong>Quantity:</strong> {{items.quantity}}<br>
+                                <strong>Item:</strong> {{ items.item }}<br>
+                            <strong>Price:</strong> ₱ {{ items.item.price }}0</td>
+                            <td>
+                        <strong>Name:</strong> {{order.user.customer.last_name}},
+                        {{order.user.customer.first_name}}, 
+                        {{order.user.customer.middle_name}}<br>
+                        <strong>Contact:</strong> {{order.user.customer.contact}}
+                        <br>
+                   
+                        <strong>Address:</strong> {{order.shipping_address.barangay}}
+                        {{order.shipping_address.municipality}}
+                            <td>₱ 0</td>
+                            <td>₱ 0</td>
+                            <td>{{ order.rider }} {{ order.rider.contact }}</td>
+                            <td>{{ order.status }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+    </div>
+
+    <br>
+    <div class="card card-body">
+        <h3>{{delivered}} Delivered Orders</h3>
+        <table id="customers">
+            <tr>
+                <th>Order</th>
+                <th>Customer Info</th>
+                <th>Surcharge</th>     
+                <th>Total Fee</th>
+                <th>Rider</th>
+                <th>Status</th>
+            </tr>
+
+            {% for order in order %}
+                {% if order.status == "Delivered" %}
+                    <tr>
+                        {% for items in order.items.all %}     
+                            <td><strong>Quantity:</strong> {{items.quantity}}<br>
+                                <strong>Item:</strong> {{ items.item }}<br>
+                            <strong>Price:</strong> ₱ {{ items.item.price }}0</td>
+                            <td>
+                        <strong>Name:</strong> {{order.user.customer.last_name}},
+                        {{order.user.customer.first_name}}, 
+                        {{order.user.customer.middle_name}}<br>
+                        <strong>Contact:</strong> {{order.user.customer.contact}}
+                        <br>
+                   
+                        <strong>Address:</strong> {{order.shipping_address.barangay}}
+                        {{order.shipping_address.municipality}}
+                            <td>₱ 0</td>
+                            <td>₱ 0</td>
+                            <td>{{ order.rider }} {{ order.rider.contact }}</td>
+                            <td>{{ order.status }}</td>
+                        {% endfor %}
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </table>
+        <h4 style="text-align: right;">TOTAL SERVICE CHARGE: ₱ {{total}}0</h4>
+    </div>
+    <br>
+    <hr>
+-->
+<!--
+    ##script##
+    $("#btnPending").on('click', function() {
+        $("#pnd").fadeIn();
+        $("#ong").fadeOut();
+        $("#dlvd").fadeOut();
+    });
+
+    $("#btnOngoing").on('click', function() {
+        $("#ong").fadeIn();
+        $("#pnd").fadeOut();
+        $("#dlvd").fadeOut();
+    });
+
+    $("#btnDelivered").on('click', function() {
+        $("#dlvd").fadeIn();
+        $("#pnd").fadeOut();
+        $("#ong").fadeOut();
+    });
+
+
+                                    <th>Date</th>
+                                  <th>Item</th>
+                                  <th>Ordered by</th>
+                                  <th>Rider</th>
+                                  <th>Charge</th>
+                                  <th>Total</th>
+-->
+
+

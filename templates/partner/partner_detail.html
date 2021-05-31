@@ -1,0 +1,192 @@
+{% extends 'base.html' %}
+
+{% load static %} 
+
+{% block content %}
+  
+	<!-- breadcrumb -->
+	<div class="bread-crumb bgwhite flex-w p-l-52 p-r-15 p-t-30 p-l-15-sm">
+		<a href="/" class="s-text16">
+			Home
+			<i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+		</a>
+
+		<a href="{% url 'core:category' store.category.slug %}" class="s-text16">
+			{{ store.category }}
+			<i class="fa fa-angle-right m-l-8 m-r-9" aria-hidden="true"></i>
+		</a>
+
+		<span class="s-text17">
+			{{ store_title }}
+		</span>
+	</div>
+
+	<!-- Product Detail -->
+	<div class="container bgwhite p-t-35 p-b-80">
+		<div class="flex-w flex-sb">
+			<div class="w-size13 p-t-30 respon5">
+				<div class="wrap-slick3 flex-sb flex-w">
+					<div class="wrap-slick3-dots"></div>
+
+					<div class="slick3">
+						<div class="item-slick3" data-thumb="{{ store_profile_pic.url }}">
+							<div class="wrap-pic-w">
+								<img src="{{ store_profile_pic.url }}" alt="{{ store_title }}">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="w-size14 p-t-30 respon5">
+				<h4 class="product-detail-name m-text17 p-b-13">
+					{{ store_title }}
+				</h4>
+				<span class="s-text7">
+					Contact Number: {{ store.contact }}
+				</span>
+				<br>
+				<span class="s-text7">
+					Address: {{ store.address }}
+				</span>
+				<br>
+				<span class="s-text7">
+					E-mail: {{ store.email }}
+				</span>
+
+				<div class="p-t-33 p-b-60">
+					<div class="flex-r-m flex-w p-t-10">
+						<div class="w-size16 flex-m flex-w">
+							
+						</div>
+					</div>
+				</div>
+				<br>
+			
+				<div class="wrap-dropdown-content bo6 p-t-15 p-b-14 active-dropdown-content">
+					<h5 class="js-toggle-dropdown-content flex-sb-m cs-pointer m-text19 color0-hov trans-0-4">
+						Description
+						<i class="down-mark fs-12 color1 fa fa-minus dis-none" aria-hidden="true"></i>
+						<i class="up-mark fs-12 color1 fa fa-plus" aria-hidden="true"></i>
+					</h5>
+
+					<div class="dropdown-content dis-none p-t-15 p-b-23">
+						<p class="s-text8">
+							{{ store_description_short }}
+						</p>
+						<p class="s-text8">
+							{{ store.description_long }}
+						</p>
+					</div>
+				</div>	
+			</div>
+		</div>
+	</div>
+
+
+	<!-- Related Products -->
+	<section class="bgwhite p-t-55 p-b-65">
+		<div class="container">
+			<div class="row">
+				<div class="col-sm-6 col-md-4 col-lg-3 p-b-50">
+					<div class="leftbar p-r-20 p-r-0-sm">
+						
+						<h4 class="m-text14 p-b-7">
+							Products
+						</h4>
+					
+						<div class="wra-filter-bar">
+							<div id="filter-bar"></div>
+						</div>
+			
+					</div>
+
+					<div class="search-product pos-relative bo4 of-hidden">
+						<input class="s-text7 size6 p-l-23 p-r-50" type="text" name="search-product" placeholder="Search Products...">
+
+						<button class="flex-c-m size5 ab-r-m color2 color0-hov trans-0-4">
+							<i class="fs-12 fa fa-search" aria-hidden="true"></i>
+						</button>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-sm-6 col-md-8 col-lg-9 p-b-50">
+										
+				<!-- Product -->
+				<div class="row">
+					{% for item in object_list %}
+						
+					<div class="col-sm-12 col-md-6 col-lg-4 p-b-50">
+
+							<!-- Block2 -->
+						<div class="block2">
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-labelnew">
+								<img src="{{ item.image.url }}" alt="IMG-PRODUCT" 
+								style="height: 360px;">
+
+								<div class="block2-overlay trans-0-4">
+									<div class="block2-btn-addcart w-size1 trans-0-4{{item.get_label_display}}">
+										<a href="{{item.get_absolute_url}}">
+
+											<!-- Button -->
+										<button class="flex-c-m size1 bg4 bo-rad-23 hov1 s-text1 trans-0-4">
+											Add to Cart
+										</button>
+									</div>
+								</div>
+							
+								<div class="block2-txt p-t-20">
+									<a href="{{item.get_absolute_url}}" class="block2-name dis-block s-text3 p-b-5">
+										{{item.title}}
+									</a>
+
+									<span class="block2-price m-text6 p-r-5">
+										₱{{item.price}}
+									</span>
+								</div>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>		
+			<!-- ---- row end ------- -->
+
+			<br>
+
+			<!-- Pagination -->
+			{% if is_paginated %}
+			<div class="pagination flex-m flex-w p-t-26">
+				{% if page_obj.has_previous %}
+				<a class="page-link" href="?page={{ page_obj.previous_page_number}}" aria-label="Previous">
+					<span aria-hidden="true">&laquo;</span>
+					<span class="sr-only">Previous</span>
+				</a>
+				{% endif %}
+				<a href="?page={{ page_obj.number }}" class="item-pagination flex-c-m trans-0-4 active-pagination">{{page_obj.number}}</a>
+					
+					
+				{% if page_obj.has_next %}
+				<a class="page-link" href="?page={{ page_obj.next_page_number}}" aria-label="Next">
+					<span aria-hidden="true">&raquo;</span>
+					<span class="sr-only">Next</span>
+				</a>
+				{% endif %}
+			</div>
+			{% endif %}
+		</div>
+	</section>
+	
+	<!-- Back to top -->
+	<div class="btn-back-to-top bg0-hov" id="myBtn">
+		<span class="symbol-btn-back-to-top">
+			<i class="fa fa-angle-double-up" aria-hidden="true"></i>
+		</span>
+	</div>
+
+	<!-- Container Selection -->
+	<div id="dropDownSelect1"></div>
+	<div id="dropDownSelect2"></div>
+
+	{% endblock content %}

@@ -1,0 +1,335 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+
+<div class="product-product-35">
+	<div class="loader"></div>
+	<div id="product-page" class="container">
+		<ul class="breadcrumb">
+			<li><a href="/">home</a></li>
+			<li><a href="/shop/">shop</a></li>
+			<li><a href="">{{store.store}}</a></li>
+		</ul>
+		<div class="row">
+			<div id="content" class="col-sm-12">
+				<h2 class="page_title">{{store.store}}</h2>
+				<div class="pro-deatil clearfix row">
+					<div class="col-sm-6 product-img">
+						<div class="thumbnails">
+							<div class="product-additional">
+								<div class="pro-image">
+									<a href="{{store.profile_pic.url}}" title="{{store.store}}"
+										class="thumbnail">
+										<img src="{{store.profile_pic.url}}" title="{{store.store}}"
+											id="zoom" alt="{{store.store}}"
+											data-zoom-image="{{store.prfile_pic.url}}" />
+									</a>
+								</div>
+
+								<div id="additional-carousel" class="owl-carousel owl-theme clearfix">
+									<div class="image-additional">
+										<a href="{{store.profile_pic.url}}" title="{{store.store}}"
+											class="elevatezoom-gallery"
+											data-image="{{store.prfile_pic.url}}"
+											data-zoom-image="{{store.prfile_pic.url}}">
+											<img src="{{store.profile_pic.url}}"
+												title="{{store.store}}" alt="{{object.store}}" width="80"
+												height="80" />
+										</a>
+									</div>
+								</div>
+
+							</div>
+						</div>
+					</div>
+					<div class="col-sm-6">
+						<div class="right_info">
+							<h1 class="">{{store.store}}</h1>
+							<div class="rating clearfix">
+								<div class="product-rating">
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i
+											class="fa fa-star-o fa-stack-1x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i
+											class="fa fa-star-o fa-stack-1x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i
+											class="fa fa-star-o fa-stack-1x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star fa-stack-1x"></i><i
+											class="fa fa-star-o fa-stack-1x"></i></span>
+									<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-1x"></i></span>
+								</div>
+								<a href="#" class="reviews"
+									onclick="$('a[href=\'#tab-review\']').trigger('click'); $('body,html').animate({scrollTop: $('.nav-tabs').offset().top}, 800); return false;">1
+									reviews</a>
+								<a href="#" class="write-review"
+									onclick="$('a[href=\'#tab-review\']').trigger('click'); $('body,html').animate({scrollTop: $('.nav-tabs').offset().top}, 800); return false;"><i
+										class="fa fa-pencil" aria-hidden="true"></i>Write a review</a>
+							</div>
+							<hr>
+							<ul class="list-unstyled">
+								<li><span class="disc">Contact No.:</span><span class="disc1">{{store.contact}}</span></li>
+								<li><span class="disc">Address:</span><span class="disc1">{{store.complete_address}}</span></li>
+								<li><span class="disc">Address(Line-2):</span><span class="disc1">{{store.address_line_2}}</span></li>
+								<li><span class="disc">E-mail:</span><span class="disc1">{{store.email}}</span></li>
+								
+								</a>
+							</ul>
+							<hr>
+							<ul class="list-unstyled">
+								<li><span class="disc"></span><span class="disc1"><strong>{{store.description_short}}</strong></span></li>
+								<br>
+								<li><span class="disc1">{{store.description_long}}</span></li>
+							</ul>
+							<hr>
+							<!-- AddThis Button BEGIN -->
+							<div class="addthis_toolbox addthis_default_style"
+								data-url="indexfac8.html?route=product/product&amp;product_id=35">
+								<a class="addthis_button_facebook_like" fb:like:layout="button_count"></a>
+								<a class="addthis_button_tweet"></a>
+								<a class="addthis_button_pinterest_pinit"></a>
+								<a class="addthis_counter addthis_pill_style"></a>
+							</div>
+							<script type="text/javascript"
+								src="../../../s7.addthis.com/js/300/addthis_widget.js#pubid=ra-515eeaf54693130e"></script>
+							<!-- AddThis Button END -->
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12">
+					<div class="row pro-tab">
+						<ul class="nav nav-tabs">
+							<li><a href="#tab-review" data-toggle="tab">Products</a></li>
+						</ul>
+						<div class="tab-content">
+							<div class="tab-pane active" id="tab-description">
+							<!--#########################################################-->
+							<div class="cat_info">
+								<div class="row">
+									<div class="col-sm-2 col-xs-5 cat_list_gird">
+										<div class="btn-group btn-group-sm">
+											<button type="button" id="grid-view" class="btn btn-default" data-toggle="tooltip"
+												title="Grid"><i class="fa fa-th"></i></button>
+											<button type="button" id="list-view" class="btn btn-default" data-toggle="tooltip"
+												title="List"><i class="fa fa-th-list"></i></button>
+										</div>
+									</div>
+									<div class="col-sm-3 col-xs-6 com-total">
+										<a href="index6431.html?route=product/compare" id="compare-total" class="btn btn-link">Product
+											Compare (0)</a>
+									</div>
+									<div class="col-sm-7 col-xs-12 cat-pagination-right">
+										<div class="cat-sort">
+											<div class="text-right show-text clearfix">
+												<label class="control-label text_sort" for="input-sort">Sort By:</label>
+											</div>
+											<div class="text-right show-select clearfix">
+												<div class="select-filter-sort">
+													<select id="input-sort" class="form-control sort-order"
+														onchange="location = this.value;">
+														<option
+															value="https://opencart.mahardhi.com/MT03/food/index.php?route=product/category&amp;path=25&amp;sort=p.sort_order&amp;order=ASC"
+															selected="selected">Default</option>
+														<option
+															value="indexa0f8.html?route=product/category&amp;path=25&amp;sort=pd.name&amp;order=ASC">
+															Name (A - Z)</option>
+														<option
+															value="indexd979.html?route=product/category&amp;path=25&amp;sort=pd.name&amp;order=DESC">
+															Name (Z - A)</option>
+														<option
+															value="index55e2.html?route=product/category&amp;path=25&amp;sort=p.price&amp;order=ASC">
+															Price (Low &gt; High)</option>
+														<option
+															value="index488f.html?route=product/category&amp;path=25&amp;sort=p.price&amp;order=DESC">
+															Price (High &gt; Low)</option>
+														<option
+															value="indexdab8.html?route=product/category&amp;path=25&amp;sort=rating&amp;order=DESC">
+															Rating (Highest)</option>
+														<option
+															value="index04db.html?route=product/category&amp;path=25&amp;sort=rating&amp;order=ASC">
+															Rating (Lowest)</option>
+														<option
+															value="index159c.html?route=product/category&amp;path=25&amp;sort=p.model&amp;order=ASC">
+															Model (A - Z)</option>
+														<option
+															value="index7257.html?route=product/category&amp;path=25&amp;sort=p.model&amp;order=DESC">
+															Model (Z - A)</option>
+													</select>
+												</div>
+											</div>
+										</div>
+										<div class="cat-show">
+											<div class="text-right show-text clearfix">
+												<label class="control-label text_limit" for="input-limit">Show:</label>
+											</div>
+											<div class="text-right show-select clearfix">
+												<div class="select-filter-show">
+													<select id="input-limit" class="form-control limits-text"
+														onchange="location = this.value;">
+														<option
+															value="https://opencart.mahardhi.com/MT03/food/index.php?route=product/category&amp;path=25&amp;limit=9"
+															selected="selected">9</option>
+														<option value="indexae56.html?route=product/category&amp;path=25&amp;limit=25">
+															25</option>
+														<option value="indexd180.html?route=product/category&amp;path=25&amp;limit=50">
+															50</option>
+														<option value="index970a.html?route=product/category&amp;path=25&amp;limit=75">
+															75</option>
+														<option value="indexf3d8.html?route=product/category&amp;path=25&amp;limit=100">
+															100</option>
+													</select>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row category-row">
+								{% for a in object_list %}
+								<div class="product-layout product-list col-xs-12">
+									<div class="product-thumb transition">
+										<div class="image">
+											<a href="{{a.get_absolute_url}}">
+												<img src="{{a.image.url}}" alt="{{a.name}}" title="{{a.name}}" class="img-responsive" />
+												<img class="img-responsive hover-img" src="{{a.image.url}}" title="{{a.name}}"
+													alt="{{a.name}}" />
+											</a>
+				
+											<div class="cart_main">
+												<a href="{{ a.get_add_to_cart_url }}">
+													<button type="button" class="addcart" data-toggle="tooltip"
+														title="Add to Cart"></button>
+												</a>
+											</div>
+				
+										</div>
+										<div class="thumb-description clearfix">
+											<div class="caption">
+												<div class="desc-inner">
+													<h4 class="product-title"><a
+															href="{{a.get_absolute_url}}"><strong>{{a.store.store}}</strong><br>{{a.name}}</a></h4>
+												</div>
+												<div class="rating">
+													<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+													<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+													<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+													<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+													<span class="fa fa-stack"><i class="fa fa-star-o fa-stack-2x"></i></span>
+												</div>
+												<p class="description">{{a.description_short}}
+				
+													{{a.description_long}}</p>
+												<p class="price">
+													₱{{a.price}}
+												</p>
+				
+											</div>
+											<div class="cart_main">
+												<a href="{{ a.get_add_to_cart_url }}"><button type="button" class="addcart" title="Add to Cart" onclick="cart.add('45');">Add
+													to Cart</button></a>
+											</div>
+										</div>
+									</div>
+								</div>
+								{% endfor %}
+							</div>
+							<div class="pro_pagination clearfix">
+								<div class="col-sm-6 text-left">Showing 1 to 9 of 18 (2 Pages)</div>
+								<div class="col-sm-6 text-right">
+									<ul class="pagination">
+										<li class="active"><span>1</span></li>
+										<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">2</a></li>
+										<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">&gt;</a></li>
+										<li><a href="index21f5.html?route=product/category&amp;path=25&amp;page=2">&gt;|</a></li>
+									</ul>
+								</div>
+							</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+			</div>
+
+		</div>
+	</div>
+</div>
+
+	<!-- M-Custom script -->
+	<script>
+	// Additional images
+	const direction = $('html').attr('dir');
+
+		$('#additional-carousel').each(function () {
+			if ($(this).closest('#column-left').length == 0 && $(this).closest('#column-right').length == 0) {
+				$(this).addClass('owl-carousel owl-theme');
+				const items = $(this).data('items') || 5;
+				const sliderOptions = {
+					loop: false,
+					nav: true,
+					navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+					dots: false,
+					items: items,
+					mouseDrag: false,
+					touchDrag: false,
+					pullDrag: false,
+					rewind: false,
+					autoplay: true,
+					responsiveRefreshRate: 200,
+					responsive: {
+						0: { items: 1 },
+						320: { items: ((items - 3) > 1) ? (items - 3) : 1 },
+						351: { items: ((items - 2) > 1) ? (items - 2) : 1 },
+						426: { items: ((items - 1) > 1) ? (items - 1) : 1 },
+						768: { items: ((items - 2) > 1) ? (items - 2) : 1 },
+						992: { items: ((items - 1) > 1) ? (items - 1) : 1 },
+						1200: { items: items }
+					}
+				};
+				if (direction == 'rtl') sliderOptions['rtl'] = true;
+				$(this).owlCarousel(sliderOptions);
+			}
+		});
+
+		$(document).ready(function () {
+			if ($(window).width() > 991) {
+				$("#zoom").elevateZoom({
+					zoomType: "inner",
+					cursor: "crosshair",
+					gallery: 'additional-carousel',
+					galleryActiveClass: 'active'
+				});
+
+				var image_index = 0;
+				$(document).on('click', '.thumbnail', function () {
+					$('.thumbnails').magnificPopup('open', image_index);
+					return false;
+				});
+
+				$('#additional-carousel a').click(function () {
+					var smallImage = $(this).attr('data-image');
+					var largeImage = $(this).attr('data-zoom-image');
+					var ez = $('#zoom').data('elevateZoom');
+					$('.thumbnail').attr('href', largeImage);
+					ez.swaptheimage(smallImage, largeImage);
+					image_index = $(this).index('#additional-carousel a');
+					return false;
+				});
+			} else {
+				$(document).on('click', '.thumbnail', function () {
+					$('.thumbnails').magnificPopup('open', 0);
+					return false;
+				});
+			}
+		});
+
+		$(document).ready(function () {
+			$('.thumbnails').magnificPopup({
+				type: 'image',
+				delegate: 'a.elevatezoom-gallery',
+				gallery: {
+					enabled: true
+				}
+			});
+		});
+
+</script>
+{% endblock content %}

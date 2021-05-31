@@ -1,0 +1,128 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+
+<div class="loader"></div>
+<div id="account-order" class="container">
+    <ul class="breadcrumb">
+        <li><a href="/">home</a></li>
+        <li><a href="/customer/my_account/">My Account</a></li>
+        <li><a href="/customer/order_history/">Order History</a></li>
+    </ul>
+    <div class="row">
+        <aside id="column-left" class="col-sm-3 hidden-xs">
+            <div class="account-content">
+                <div class="box-content">
+                    <div class="list-group">
+                        <h3 class="toggled">Account</h3>
+                        <ul class="list-unstyled">
+                            <li><a href="/customer/my_account/" class="list-group-item">My Account</a></li>
+                            <li><a href="/customer/edit_information/" class="list-group-item">Edit Account</a></li>
+                            <li><a href="{% url 'core:change_password' %}" class="list-group-item">Password</a></li>
+                            <li><a href="/customer/edit_address/" class="list-group-item">Edit Address</a></li>
+                            <li><a href="/customer/order_history/" class="list-group-item">Order History</a></li>
+                            <li><a href="/accounts/logout/" class="list-group-item">Logout</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <div class="box-content">
+                    <h3 class="box-content toggled">Information</h3>
+                    <ul class="list-unstyled">
+                        <li><a href="#">About
+                                Us</a></li>
+                        <li><a href="#">Privacy
+                                Policy</a></li>
+                        <li><a href="#">Terms
+                                &amp; Conditions</a></li>
+                        <li><a href="#">Contact
+                                Us</a></li>
+                        <li><a href="#">Site
+                                Map</a></li>
+                    </ul>
+                </div>
+            </div>
+
+        </aside>
+
+        <div id="content" class="col-sm-9">
+            <h1>Order History</h1>
+            <link href="{% static 'assets/plugins/data-tables/datatables.bootstrap4.min.css' %}" rel="stylesheet" />
+            <link href="{% static 'assets/plugins/data-tables/jquery.datatables.min.css' %}" rel="stylesheet" />
+            <div class="card-body">
+                <div class="hoverable-data-table">
+                    <table id="hoverable-data-table" class="table table-hover" style="width:auto;">
+                        <thead>
+                            <tr>
+                                <th>Customer</th>
+                                <th>Sugo/Product</th>
+                                <th>Status</th>
+                                <th>Total</th>
+                                <th>Date Ordered</th>
+                                <th style="text-align: right;">Cancel</th>
+                                <th>View</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            {% for a in orders %}
+                            <tr>
+                                <td>{{ a.user.customer.first_name }}
+                                    {% if a.user.customer.middle_name %}
+                                    {{ a.user.customer.middle_name }}
+                                    {% endif %}
+                                    {{ a.user.customer.last_name }}
+                                    {% if user.customer.suffix %}
+                                    {{ a.user.customer.suffix }}
+                                    {% endif %}
+                                </td>
+                                {% if a.other %}
+                                <td>{{a.other.note}}</td>
+                                {% else %}
+                                <td style="display: block; margin-top: 3%;">
+                                    {% for b in a.items.all %}
+                                    {{b.item.name}}<br>
+                                    {% endfor %}
+                                </td>
+                                {% endif %}
+                                <td>{{ a.status }}</td>
+                                <td>{{ a.total }}</td>
+                                <td>{{ a.date_ordered }}</td>
+                                <td>
+                                    <a class="btn btn-primary float-right ml-2 far"
+                                        style="padding-top: 2px; padding-bottom: 2px; padding-right: 2px; padding-left: 2px;"
+                                        href="{% url 'core:update_order' a.id %}">Cancel
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="{% url 'core:customer_order_information' a.id %}" data-toggle="tooltip"
+                                        title="View" class="btn btn-info">
+                                        <i class="fa fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endblock content %}
+
+    {% block extra_scripts %}
+
+    <script>
+
+        jQuery(document).ready(function () {
+            jQuery('#hoverable-data-table').DataTable({
+                "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+                "pageLength": 20,
+                "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+            });
+        });
+    </script>
+    {% endblock extra_scripts %}

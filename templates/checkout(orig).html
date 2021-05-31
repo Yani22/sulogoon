@@ -1,0 +1,329 @@
+{% extends 'base.html' %} 
+{% load static %} 
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<style>
+  #map{
+    height: 400px;
+    width: 100%;
+  }
+
+  input {
+    border: 1px solid #ced4da !important;
+  }
+
+  input[type=text] {
+    border: 1px solid #ced4da !important;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+</style> 
+<!--<link rel="stylesheet" href="{% static 'assets/plugins/leaflet-measure.css' %}">-->
+
+
+ 
+<div class="container">
+  <div class="py-5 text-center">
+    <img class="d-block mx-auto mb-4" src="{% static 'images/icons/checkout.svg' %}" alt="" width="100" height="100">
+    <h2>Checkout Form</h2>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8 order-md-1 card">
+
+      <br>
+
+      <h4>Shipping Address</h4> 
+
+      <hr>  
+      
+          <!-- ###################################################################### -->
+          <input class="search-location" type="text" size="100%" placeholder="Search Location" oninput="onTyping(this)"/>
+          <ul id="search-result"></ul>
+          <br>
+      <form method="POST" id="add_shipp">
+          {% csrf_token %}
+
+          {% for order_item in order.items.all %}
+          <input type="hidden" name="lat1" id="lat1" value="{{ order_item.partnerstore.latitude }}">
+          <input type="hidden" name="lon1" id="lon1" value="{{ order_item.item.store.longitude }}">
+          <input type="hidden" name="lat2" id="lat2" value="{{ order_item.user.customer.latitude }}">
+          <input type="hidden" name="lon2" id="lon2" value="{{ order_item.user.customer.longitude }}">
+          {% endfor %}
+
+            
+
+            <p>Drag and drop the marker to your shipping address.
+              or just click/press the map.</p>
+            <div id="map"></div>
+            <br>
+            <p>* Make sure the shipping address you provided above is correct.</p>
+            <hr>
+
+          {{ form_choice|crispy }}
+        <button class="btn btn-primary btn-lg btn-block" name="btnAddress" type="submit">Continue to checkout</button>
+      </form>    
+      
+    </div>
+    <!--{% include "order_snippet.html" %}-->
+    <div class="col-md-4 order-md-2 mb-4" style="background: #fff;">
+      <h4 class="d-flex justify-content-between align-items-center mb-3">
+        <span class="text-muted">Your cart</span>
+        <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+      </h4>
+      <ul class="list-group mb-3">
+        {% for order_item in order.items.all %}
+        <li class="list-group-item d-flex justify-content-between lh-condensed">
+          <div>
+            <h6 class="my-0">{{ order_item.item.title }}</h6>
+            <img src="{{ order_item.item.image.url }}" style="width: 90px; margin-top: 5px;">
+            <br>
+            <small class="text-muted">Quantity : {{ order_item.quantity }}</small>
+            <input type="hidden" id="from" value="{{ order_item.partnerstore.store }}">
+          </div>
+          <span class="text-muted">₱ {{ order_item.get_final_price }}</span>
+        </li>
+        {% endfor %}
+
+        <li class="list-group-item d-flex justify-content-between">
+          <input type="hidden" name="sbttl" id="sbttl" value="{{order.get_total}}">
+          <span>Subtotal</span>
+          <strong>₱ {{ order.get_total }}</strong>
+        </li>
+
+
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Distance (km)</span>
+          <strong id="res1"></strong>
+        </li>
+     
+    
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Shipping Rate (Per km)</span>
+          {% for rate in rate %}
+          <input type="hidden" name="rate" id="rate" value="{{rate.shipping_rate}}">
+          <strong>₱ {{rate.shipping_rate}}</strong>
+          {% endfor %}
+        </li>
+
+        <li class="list-group-item d-flex justify-content-between">
+          <span>Total</span>
+          <strong id="ttl">₱</strong>
+        </li>
+  
+      </ul>
+     
+
+    </div>
+    
+    
+  </div>
+
+  <footer class="my-5 pt-5 text-muted text-center text-small">
+    <p class="mb-1">&copy; 2021 Sulogoon</p>
+    <ul class="list-inline">
+      <li class="list-inline-item"><a href="#">Privacy</a></li>
+      <li class="list-inline-item"><a href="#">Terms</a></li>
+      <li class="list-inline-item"><a href="#">Support</a></li>
+    </ul>
+  </footer>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+
+<script>
+
+  //origin
+  var lat1 = document.getElementById("lat1").value;
+  var lon1 = document.getElementById("lon1").value;
+  var lat2 = document.getElementById("lat2").value; 
+  var lon2 = document.getElementById("lon2").value;
+  var rate = document.getElementById("rate").value;
+  var from = document.getElementById("from").value;
+
+  var mymap = L.map('map').setView([7.447054, 125.809412], 15);
+
+  var locations = [
+    ["From: " + from, lat1, lon1],
+    ["To: Delivery address", lat2, lon2]
+  ];
+  for (var i = 0; i < locations.length; i++) {
+    var marker = new L.marker([locations[i][1], locations[i][2]],{
+      draggable: true})
+      .addTo(mymap)
+      .bindPopup(locations[i][0], {closeOnClick: false, autoClose: false}).openPopup();
+  }
+
+  var polylinePoints = [
+        [lat1, lon1],
+        [lat2, lon2]
+      ];          
+  var polyline = L.polyline(polylinePoints).addTo(mymap);
+  mymap.fitBounds([[lat1,lon1],[lat2,lon2]]);
+
+
+  document.getElementById("res1").innerHTML=calcCrow(lat1,lon1,lat2,lon2).toFixed(1);
+  var kmtr = document.getElementById("res1").innerHTML;
+  var subTotal = document.getElementById("sbttl").value;
+  kmtr1 = Number(kmtr);
+  subTotal1 = Number(subTotal);
+  var res = kmtr1 * rate;
+  var total = res + subTotal1
+  console.log("km",kmtr);
+  console.log("rate",rate);
+  console.log("subttl",subTotal);
+  console.log("res",res);
+  console.log("total",total)
+  document.getElementById("ttl").innerHTML = '₱ ' + total + '.00';  
+  
+
+  marker.on('dragend', function (e) {
+    var a = marker.getLatLng().lat.toString();
+    var b = marker.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("lat2").value=c; 
+    document.getElementById("lon2").value=d;
+    document.getElementById("res1").innerHTML=calcCrow(l1,lo1,l2,lo2).toFixed(1);
+  });
+  
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 20,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+  }).addTo(mymap);
+  var scale = L.control.scale(); // Creating scale control
+         scale.addTo(mymap); // Adding scale control to the map
+
+  const resultsWrapperHTML = document.getElementById("search-result")
+
+  mymap.on("click", function(e){
+    const {lat, lng} = e.latlng
+    // regenerate marker position
+    marker.setLatLng([lat, lng])
+    var a = marker.getLatLng().lat.toString();
+    var b = marker.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("lat2").value=c; 
+    document.getElementById("lon2").value=d;
+
+    var l1 = document.getElementById("lat1").value;
+    var lo1 = document.getElementById("lon1").value;
+    var l2 = document.getElementById("lat2").value;
+    var lo2 = document.getElementById("lon2").value;
+    
+    document.getElementById("res1").innerHTML=calcCrow(l1,lo1,l2,lo2).toFixed(1);
+    var kmtr = document.getElementById("res1").innerHTML;
+    var subTotal = document.getElementById("sbttl").value;
+    kmtr1 = Number(kmtr);
+    subTotal1 = Number(subTotal);
+
+    var res = kmtr1 * rate;
+    var total = res + subTotal1
+    console.log("km",kmtr);
+    console.log("rate",rate);
+    console.log("subttl",subTotal);
+    console.log("res",res);
+    console.log("total",total)
+    document.getElementById("ttl").innerHTML = '₱ ' + total + '.00';
+  })
+
+  // search location handler
+  let typingInterval 
+
+  // typing handler
+  function onTyping(e) {
+    clearInterval(typingInterval)
+    const {value} = e
+    typingInterval = setInterval(() => {
+      clearInterval(typingInterval)
+      searchLocation(value)
+    }, 500)
+  }
+
+  // search handler
+  function searchLocation(keyword) {
+    if(keyword) {
+      // request to nominatim api
+      fetch(`https://nominatim.openstreetmap.org/search?q=${keyword}&format=json`)
+      .then((response) => {
+        return response.json()
+      }).then(json => {
+        // get response data from nominatim
+        console.log("json", json)
+        if(json.length > 0) return renderResults(json)
+        else alert("Location not found.")
+      })
+    }
+  }
+
+  // render results
+  function renderResults(result) {
+    let resultsHTML = ""
+    result.map((n) => {
+      resultsHTML += `<li><a href="#" onclick="setLocation(${n.lat},${n.lon})">${n.display_name}</a></li>`
+    })
+    resultsWrapperHTML.innerHTML = resultsHTML
+  }
+
+  // clear results
+  function clearResults() {
+    resultsWrapperHTML.innerHTML = ""
+  }
+
+  // set location from search result
+  function setLocation(lat, lon) {
+    // set map focus
+    mymap.setView(new L.LatLng(lat, lon), 15)
+    // regenerate marker position
+    marker.setLatLng([lat, lon])
+    var a = marker.getLatLng().lat.toString();
+    var b = marker.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("lat2").value=c; 
+    document.getElementById("lon2").value=d;
+    // clear results
+    clearResults()
+  }
+
+  //This function takes in latitude and longitude of two location and returns the distance between them as the crow flies (in km)
+  function calcCrow(lat1, lon1, lat2, lon2) {
+   
+      var R = 6371; // km
+      var dLat = toRad(lat2-lat1);
+      var dLon = toRad(lon2-lon1);
+      var lat1 = toRad(lat1);
+      var lat2 = toRad(lat2);
+
+      var a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+        Math.sin(dLon/2) * Math.sin(dLon/2) * Math.cos(lat1) * Math.cos(lat2); 
+      var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+      var d = R * c;
+      return d;
+      
+      
+    }
+
+    // Converts numeric degrees to radians
+    function toRad(Value) 
+    {
+        return Value * Math.PI / 180;
+    }
+
+</script>
+
+
+{% endblock extra_scripts %}

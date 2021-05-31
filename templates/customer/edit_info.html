@@ -1,0 +1,129 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<body class="account-edit">
+    <div class="loader"></div>
+    <div id="account-edit" class="container">
+        <ul class="breadcrumb">
+            <li><a href="/">home</a></li>
+            <li><a href="/customer/my_account/">My Account</a></li>
+            <li><a href="/customer/edit_information/">Edit Information</a></li>
+        </ul>
+        <div class="row">
+            <aside id="column-left" class="col-sm-3 hidden-xs">
+                <div class="account-content">
+                    <div class="box-content">
+                        <div class="list-group">
+                            <h3 class="toggled">Account</h3>
+                            <ul class="list-unstyled">
+                                <li><a href="/customer/my_account/" class="list-group-item">My Account</a></li>
+                                <li><a href="/customer/edit_information/" class="list-group-item">Edit Account</a></li>
+                                <li> <a href="{% url 'core:change_password' %}" class="list-group-item">Edit password</a></li>
+                                <li><a href="/customer/edit_address/" class="list-group-item">Edit Address</a></li>
+                                <li><a href="/customer/order_history/" class="list-group-item">Order History</a></li>
+                                <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=account/logout" class="list-group-item">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sidebar">
+                    <div class="box-content">
+                        <h3 class="box-content toggled">Information</h3>
+                        <ul class="list-unstyled">
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=4">About
+                                    Us</a></li>
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=3">Privacy
+                                    Policy</a></li>
+                            <li><a
+                                    href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/information&amp;information_id=5">Terms
+                                    &amp; Conditions</a></li>
+                            <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/contact">Contact
+                                    Us</a></li>
+                            <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=information/sitemap">Site
+                                    Map</a></li>
+                        </ul>
+                    </div>
+                </div>
+
+            </aside>
+
+            <div id="content" class="col-sm-9">
+                <legend>Your Personal Details</legend>
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.profile_pic|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <h4>Current picture</h4>
+                            <div class="form-group">
+                                {% if request.user.customer.profile_pic %}
+                                <img class="card-img mx-auto rounded-circle" width="20%" height="20%"
+                                    src="{{request.user.customer.profile_pic.url}}" alt="User Image">
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.first_name|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.middle_name|as_crispy_field}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.last_name|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.suffix|as_crispy_field}}
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row mb-2">
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.contact|as_crispy_field}}
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                {{form1.gender|as_crispy_field}}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group mb-4">
+                        {{form1.email|as_crispy_field}}
+                    </div>
+                    <hr>
+                    <div class="text-right">
+                        <a href="{% url 'core:change_password' %}">Change Password</a>
+                        <div class="d-flex justify-content-end mt-5">
+                            <button type="submit" name="btnSetting" class="btn btn-primary">Update Profile</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    {% endblock content %}

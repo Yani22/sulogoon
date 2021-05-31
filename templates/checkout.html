@@ -1,0 +1,287 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+
+<div class="product-product-35">
+  <div class="loader"></div>
+  <div id="product-page" class="container">
+    <ul class="breadcrumb">
+      <li><a href="/">home</a></li>
+      <li><a href="/order-summary/">Shopping Cart</a></li>
+      <li><a href="/checkout/">Checkout</a></li>
+    </ul>
+    <div class="row">
+      <div id="content" class="col-sm-12">
+        <h2 class="page_title">Checkout</h2>
+        <div class="container">
+
+          <div class="col-md-8 order-md-1 card">
+            <form action="">
+              <input type="radio" id="radDef" name="radAddress" value="1" checked> Use my default address<br>
+              <input type="radio" id="radNew" name="radAddress" value="2"> Use a new address<br>
+            </form>
+            <hr>
+
+            <form method="POST" id="add_shipp">
+              <span>{{ request.user.customer.complete_address }}</span><br>
+              <span>{{ request.user.customer.address_line_2 }}</span><br>
+              <br>
+              {% csrf_token %}
+
+              {% for order_item in order.items.all %}
+              <input type="hidden" name="lat1" id="lat1" value="{{ order_item.partnerstore.latitude }}">
+              <input type="hidden" name="lon1" id="lon1" value="{{ order_item.partnerstore.longitude }}">
+              <input type="hidden" name="lat2" id="lat2" value="{{ order_item.user.customer.latitude }}">
+              <input type="hidden" name="lon2" id="lon2" value="{{ order_item.user.customer.longitude }}">
+              <input type="hidden" name="default_complete_address" id="default_complete_address"
+                value="{{ order_item.user.customer.complete_address }}">
+                <input type="hidden" name="default_address_line_2" id="default_address_line_2"
+                value="{{ order_item.user.customer.address_line_2 }}">
+              {% endfor %}
+
+              <div id="map" style="height: 400px; width: 100%;"></div>
+              <hr>
+
+              {{ form_choice|crispy }}
+              <button class="btn btn-primary btn-lg btn-block" name="btnAddress" type="submit">Continue to
+                checkout</button>
+            </form>
+
+            <form method="POST" id="new_address" style="display: none;">
+              <input
+              style="border: 1px solid #ced4da !important; width: 100%; padding: 12px 20px; margin: 8px 0; box-sizing: border-box;"
+              class="search-location" id="srchBox" type="text" size="50%" placeholder="Search address.."
+              oninput="onTyping(this)" />
+              <ul id="search-result"></ul>
+              {% csrf_token %}
+
+              <input type="hidden" name="new_lat" id="new_lat">
+              <input type="hidden" name="new_lon" id="new_lon">
+
+              <p>Drag the marker to your shipping address
+                or just click/press on the map.</p>
+              <div id="map2" style="height: 400px; width: 100%;"></div>
+              <br>
+              <div class="form-group mb-4">
+                <span>Complete Address:</span>
+                <input
+                  style="border: 1px solid #ced4da !important; width: 100%; padding: 12px 20px; margin: 8px 0; box-sizing: border-box;"
+                  type="text" name="complete_address" required="True"
+                  placeholder="Purok, Barangay, City/Municipal, Province..">
+              </div>
+              <div class="form-group mb-4">
+                <span>Address Line 2:</span>
+                <input
+                  style="border: 1px solid #ced4da !important; width: 100%; padding: 12px 20px; margin: 8px 0; box-sizing: border-box;"
+                  type="text" name="address_line_2" placeholder="Street, Building, etc..">
+              </div>
+              <p>* Make sure the shipping address you provided above is exactly correct.</p>
+              <hr>
+
+              {{ form_choice|crispy }}
+              <button class="btn btn-primary btn-lg btn-block" id="btnNewAddress" name="btnNewAddress" type="submit"
+                onclick="myFunction()">Continue to
+                checkout</button>
+            </form>
+          </div>
+          <!--{% include "order_snippet.html" %}-->
+          <div class="col-md-4 order-md-2 mb-4" style="background: #fff;">
+            <h4 class="d-flex justify-content-between align-items-center mb-3">
+              <span class="text-muted">Your cart</span>
+              <span class="badge badge-secondary badge-pill">{{ order.items.count }}</span>
+            </h4>
+            <ul class="list-group mb-3">
+              {% for order_item in order.items.all %}
+              <li class="list-group-item d-flex justify-content-between lh-condensed">
+                <div>
+                  <h6 class="my-0">{{ order_item.item.title }}</h6>
+                  <img src="{{ order_item.item.image.url }}" style="width: 90px; margin-top: 5px;">
+                  <br>
+                  <small class="text-muted">Quantity : {{ order_item.quantity }}</small>
+                  <input type="hidden" id="from" value="{{ order_item.partnerstore.store }}">
+                </div>
+                <span class="text-muted">₱ {{ order_item.get_final_price }}</span>
+              </li>
+              {% endfor %}
+
+              <li class="list-group-item d-flex justify-content-between">
+                <input type="hidden" name="sbttl" id="sbttl" value="{{order.get_total}}">
+                <span>Subtotal</span>
+                <strong>₱ {{ order.get_total }}</strong>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+
+<script>
+
+  //origin
+  var lat1 = document.getElementById("lat1").value;
+  var lon1 = document.getElementById("lon1").value;
+  var lat2 = document.getElementById("lat2").value;
+  var lon2 = document.getElementById("lon2").value;
+  var from = document.getElementById("from").value;
+  var default_complete_address = document.getElementById("default_complete_address").value;
+  var default_address_line_2 = document.getElementById("default_address_line_2").value;
+
+  var mymap = L.map('map').setView([lat2, lon2], 15);
+  var marker = L.marker(new L.LatLng(lat2, lon2), {
+    draggable: true
+  }).addTo(mymap);
+  marker.bindPopup(default_complete_address + "<br>" + default_address_line_2).openPopup();
+
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 20,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+  }).addTo(mymap);
+  var scale = L.control.scale(); // Creating scale control
+  scale.addTo(mymap); // Adding scale control to the map
+
+
+  var mymap2 = L.map('map2');
+  var radAddress = document.getElementsByName("radAddress");
+  for (var i = 0; i < radAddress.length; i++) {
+    radAddress[i].onclick = function () {
+      var val = this.value;
+      if (val == '1') {  // Assuming your value for radio buttons is radio1, radio2 and radio3.
+        document.getElementById("add_shipp").style.display = "block";
+        document.getElementById("new_address").style.display = "none";
+      }
+      else if (val == '2') {
+        document.getElementById("new_address").style.display = "block";
+        mymap2.setView([7.447054, 125.809412], 15);
+        marker2.bindPopup("<b>Drag me!</b>").openPopup();
+        document.getElementById("add_shipp").style.display = "none";
+      }
+    }
+  }
+
+    var marker2 = L.marker(new L.LatLng(7.447054, 125.809412), {
+      draggable: true
+    }).addTo(mymap2);
+    mymap2.on("click", function (e) {
+      const { lat, lng } = e.latlng
+      // regenerate marker position
+      marker2.setLatLng([lat, lng])
+      var alat = marker2.getLatLng().lat.toString();
+      var blon = marker2.getLatLng().lng.toString();
+      clat = Number(alat).toFixed(6);
+      dlon = Number(blon).toFixed(6);
+      marker2.bindPopup("<b>Location found.</b>").openPopup();
+      document.getElementById("new_lat").value = clat;
+      document.getElementById("new_lon").value = dlon;
+    })
+
+    marker2.on('dragend', function (e) {
+      var alat = marker2.getLatLng().lat.toString();
+      var blot = marker2.getLatLng().lng.toString();
+      clat = Number(alat).toFixed(6);
+      dlat = Number(blot).toFixed(6);
+      marker2.bindPopup("<b>Location found.</b>").openPopup();
+      document.getElementById("new_lat").value = clat;
+      document.getElementById("new_lon").value = dlat;
+    });
+
+    L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      maxZoom: 20,
+      id: 'mapbox/streets-v11',
+      tileSize: 512,
+      zoomOffset: -1,
+      accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+    }).addTo(mymap2);
+    var scale2 = L.control.scale(); // Creating scale control
+    scale2.addTo(mymap2); // Adding scale control to the map
+
+  function myFunction() {
+    var lat = document.getElementById("new_lat").value;
+    var lon = document.getElementById("new_lon").value;
+    if (lat == "" && lon == "") {
+      event.preventDefault();
+      document.getElementById("srchBox").style = "border: 5px solid red !important;";
+      marker2.bindPopup("<b style='color: red; font-size: small;'>Drag me or click on the map...</b>").openPopup();
+      alert("Please choose your shipping address...")
+    }
+  }
+
+  
+  const resultsWrapperHTML = document.getElementById("search-result")
+  // search location handler
+  let typingInterval
+
+  // typing handler
+  function onTyping(e) {
+    clearInterval(typingInterval)
+    const { value } = e
+
+    typingInterval = setInterval(() => {
+      clearInterval(typingInterval)
+      searchLocation(value)
+    }, 500)
+  }
+
+  // search handler
+  function searchLocation(keyword) {
+    if (keyword) {
+      // request to nominatim api
+      fetch(`https://nominatim.openstreetmap.org/search?q=${keyword}&format=json`)
+        .then((response) => {
+          return response.json()
+        }).then(json => {
+          // get response data from nominatim
+          console.log("json", json)
+          if (json.length > 0) return renderResults(json)
+          else alert("Location not found.")
+        })
+    }
+  }
+
+  // render results
+  function renderResults(result) {
+    let resultsHTML = ""
+
+    result.map((n) => {
+      resultsHTML += `<li><a href="#" onclick="setLocation(${n.lat},${n.lon})">${n.display_name}</a></li>`
+    })
+
+    resultsWrapperHTML.innerHTML = resultsHTML
+  }
+
+  // clear results
+  function clearResults() {
+    resultsWrapperHTML.innerHTML = ""
+  }
+
+  // set location from search result
+  function setLocation(lat, lon) {
+    // set map focus
+    mymap2.setView(new L.LatLng(lat, lon), 15)
+
+    // regenerate marker position
+    marker2.setLatLng([lat, lon])
+    var a = marker2.getLatLng().lat.toString();
+    var b = marker2.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker2.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("new_lat").value = c;
+    document.getElementById("new_lon").value = d;
+    // clear results
+    clearResults()
+  }
+
+</script>
+{% endblock extra_scripts %}

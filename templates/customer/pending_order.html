@@ -1,0 +1,238 @@
+{% extends "customer/customer.html" %} 
+{% load static %}
+{% block content %}
+
+<style>
+  .image {
+      max-width: 100px;
+      max-height: 100px;
+      margin: 0 auto;
+    }
+</style>
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">							
+	      <div class="row">
+					<div class="col-12">
+						<div class="card card-default">
+							<div class="card-header card-header-border-bottom d-flex justify-content-between">
+								<h2>Pending Orders</h2>
+							</div>
+              <div class="card-body">
+                <div class="hoverable-data-table">
+									<table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+										<thead>
+											<tr>
+                        <th>Customer</th>
+                        <th>Sugo</th>
+                        <th>Shipping Address</th>
+                        <th>Rider</th>
+                        <th>Charges</th>
+                        <th>Total charge</th>
+                        <th>Pay via</th>
+                        <th>Date</th>
+                        <th style="text-align: right;">Dispatch</th>
+											</tr>
+										</thead>
+
+                    <tbody>
+                      {% for ongoing in pend %}
+                        <tr>    
+                          <td>{{ongoing.user.customer.first_name}} {{ongoing.user.customer.middle_name}} {{ongoing.user.customer.last_name}} {{ongoing.user.customer.suffix}}<br>
+                            {{ongoing.user.customer.contact}}
+                          </td>
+
+                          {% if ongoing.other %}
+                            <td>{{ongoing.other.note}}</td>
+                          {% else %}
+                            <td style="display: block;">
+                              {% for items in ongoing.items.all %}
+                                {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                              {% endfor %}
+                            </td>
+                          {% endif %}
+                                
+                          <td>{{ongoing.shipping_address.house_purok_address}} {{ongoing.shipping_address.barangay}}<br>
+                            {{ongoing.shipping_address.municipality}} {{ongoing.shipping_address.province}}<br>
+                          </td>   
+                          <td>{{ongoing.rider.first_name}} {{ongoing.rider.middle_name}} {{ongoing.rider.last_name}} {{ongoing.rider.suffix}}<br>
+                            {{ongoing.rider.contact}}
+                          </td>
+                          <td>Service charge: {{ongoing.service_charge}}<br>
+                            Other: {{ongoing.surcharge}}
+                          </td>
+                          <td>{{ongoing.total}}</td>
+                          <td>{{ongoing.payment.payment_choice}}</td>
+                          <td>{{ongoing.date_ordered}}</td>
+                          <td><a class="btn btn-primary float-right ml-2 far" style="padding-top: 2px; padding-bottom: 2px; padding-right: 2px; padding-left: 2px;" href="{% url 'core:update_order' ongoing.id %}">Dispatch</a></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+									</table>
+								</div>
+							</div>
+
+
+              <!--
+							<div class="card-body">
+                <div class="hoverable-data-table">
+									<table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+										<thead>
+											<tr>
+                        <th>Image</th>
+                        <th>Sugo</th>
+                        <th>Shipping Address</th>
+                        <th>Rider</th>
+                        <th>Charges</th>
+                        <th>Total charge</th>
+                        <th>Pay via</th>
+                        <th>Date</th>
+                        <th style="text-align: right;">Cancel</th>
+											</tr>
+										</thead>
+
+                    <tbody>
+                      {% for pending in pend %}
+                        <tr>    
+                          {% for img in pending.items.all %}
+                          <td style="padding: 0; width: 1px;"><img class="image" src="{{img.item.image.url}}"></td>
+                          {% endfor %}
+                          {% if pending.other %}
+                            <td>{{pending.other.note}}</td>
+                          {% else %}
+                            <td style="display: block;">
+                              {% for items in pending.items.all %}
+                                {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                              {% endfor %}
+                            </td>
+                          {% endif %}
+                                
+                          <td>{{pending.shipping_address.house_purok_address}} {{pending.shipping_address.barangay}}<br>
+                            {{pending.shipping_address.municipality}} {{pending.shipping_address.province}}<br>
+                          </td>   
+                          <td>{{pending.rider.first_name}} {{pending.rider.middle_name}} {{pending.rider.last_name}} {{pending.rider.suffix}}<br>
+                            {{pending.rider.contact}}
+                          </td>
+                          <td>Service charge: {{pending.service_charge}}<br>
+                            Other: {{pending.surcharge}}
+                          </td>
+                          <td>{{pending.total}}</td>
+                          <td>{{pending.payment.payment_choice}}</td>
+                          <td>{{pending.date_ordered}}</td>
+                          <td><a class="btn btn-primary float-right ml-2 far" style="padding-top: 2px; padding-bottom: 2px; padding-right: 2px; padding-left: 2px;" href="{% url 'core:update_order' pending.id %}">Cancel</a></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+									</table>
+								</div>
+							</div>
+						</div>
+      -->
+     <!--
+							<div class="card-header card-header-border-bottom d-flex justify-content-between">
+								<h2>Pending Orders</h2>
+							</div>
+
+							<div class="card-body">
+                <div class="hoverable-data-table">
+									<table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+										<thead>
+											<tr>
+                        <th>Image</th>
+                        <th>Sugo</th>
+                        <th>Shipping Address</th>
+                        <th>Rider</th>
+                        <th>Charges</th>
+                        <th>Total charge</th>
+                        <th>Pay via</th>
+                        <th>Date</th>
+                        <th style="text-align: right;">Cancel</th>
+											</tr>
+										</thead>
+
+                    <tbody>
+                      {% for pending in pend %}
+                        <tr>    
+                          {% for img in pending.items.all %}
+                          <td style="padding: 0; width: 1px;"><img class="image" src="{{img.item.image.url}}"></td>
+                          {% endfor %}
+                          {% if pending.other %}
+                            <td>{{pending.other.note}}</td>
+                          {% else %}
+                            <td style="display: block;">
+                              {% for items in pending.items.all %}
+                                {{items.quantity}}pc. ({{items.item.title}} {{items.item.price}}) in {{items.partnerstore.store}}<br>
+                              {% endfor %}
+                            </td>
+                          {% endif %}
+                                
+                          <td>{{pending.shipping_address.house_purok_address}} {{pending.shipping_address.barangay}}<br>
+                            {{pending.shipping_address.municipality}} {{pending.shipping_address.province}}<br>
+                          </td>   
+                          <td>{{pending.rider.first_name}} {{pending.rider.middle_name}} {{pending.rider.last_name}} {{pending.rider.suffix}}<br>
+                            {{pending.rider.contact}}
+                          </td>
+                          <td>Service charge: {{pending.service_charge}}<br>
+                            Other: {{pending.surcharge}}
+                          </td>
+                          <td>{{pending.total}}</td>
+                          <td>{{pending.payment.payment_choice}}</td>
+                          <td>{{pending.date_ordered}}</td>
+                          <td><a class="btn btn-primary float-right ml-2 far" style="padding-top: 2px; padding-bottom: 2px; padding-right: 2px; padding-left: 2px;" href="{% url 'core:update_order' pending.id %}">Cancel</a></td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+									</table>
+								</div>
+							</div>
+				-->
+					</div>
+        </div>
+      </div>
+    </div>
+
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+  
+    jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+
+  var d = new Date();
+    var year = d.getFullYear();
+    document.getElementById("copy-year").innerHTML = year;
+</script>
+{% endblock extra_scripts %}

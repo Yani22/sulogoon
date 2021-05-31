@@ -1,0 +1,88 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% load category_template_tags %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div id="product-category" class="container">
+	<ul class="breadcrumb">
+		<li><a href="/">home</a></li>
+		<li><a href="/shop/">shop</a></li>
+		<li><a href="#">Others</a></li>
+	</ul>
+	<div class="row">
+		<aside id="column-left" class="col-sm-3 hidden-xs">
+			<div class="category-list">
+				<div class="box-category">
+					<h3 class="toggled relative">Others</h3>
+					<ul class="list-unstyled parent" id="selectMe-desk">
+						<li class="has-more-category">
+							{% for cat in cat %}
+							<a href="#" class="list-group-item main-item">{{cat.title}}<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for res in res %}
+								<li>
+									<a href="{{res.get_absolute_url}}" class="list-group-item">{{res.store}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+							{% endfor %}
+						</li>
+						<li class="has-more-category">
+							<a href="#" class="list-group-item main-item">Food<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for a in item_cat %}
+								<li>
+									<a href="{{a.get_absolute_url}}" class="list-group-item">{{a.title}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+						</li>
+						<li class="">
+							<a href="/others/" class="list-group-item ">Others<span></span></a>
+					</ul>
+				</div>
+			</div>
+
+			<script>
+				$(function () {
+					$(".parent .fa.fa-plus").remove();
+					$(".parent .toggled").append("<i class='fa fa-plus'></i>");
+					$('.parent .toggled').click(function (e) {
+						e.preventDefault();
+						if (!$(this).parent().hasClass('active')) {
+							$('+ ul', $('a.list-group-item.main-item')).slideUp();
+							$('a.list-group-item.main-item').removeClass('active');
+						}
+						$(this).parent().toggleClass('active');
+						$('+ ul', $(this).parent()).slideToggle('slow');
+						return false;
+					});
+				});
+			</script>
+		</aside>
+
+        <div id="content" class="col-sm-9">
+			<h2 class="page_title">Shop</h2>
+			<div class="row">
+				<div class="col-sm-12"><img src="{% static 'image/sulogoon/banner.png' %}" alt="Shop" title="Shop"
+						class="img-thumbnail cat-banner" /></div>
+			</div>
+                    <div class="card card-body">
+                        <hr>
+                        <h3 style="text-align: center">Other Sugo</h3>
+                        <form method="POST" action="" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <div class="text-right">
+                        <button type="submit" class="btn btn-primary">Confirm &raquo;</button>
+                                </div>
+                        </form>
+                    </div>
+        </div>
+	</div>
+</div>
+
+{% endblock content %}
+
+

@@ -1,0 +1,116 @@
+{% extends "admin/admin.html" %} 
+{% load static %}
+{% block content %}
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-default">
+              <div class="card-header card-header-border-bottom d-flex justify-content-between">
+                <h2>Customers</h2>
+              </div>
+
+              <div class="card-body">
+                <div class="hoverable-data-table">
+                  <table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>First name</th>
+                        <th>Middle name</th>
+                        <th>Last name</th>
+                        <th>Suffix</th>
+                        <th>Gender</th>
+                        <th>Contact</th>
+                        <th>Email</th>
+                        <th>Address</th>
+                        <th>Date Created</th>
+                        <th>Active</th>
+                        <th></th>
+                      </tr>
+                    </thead>
+
+                    <tbody>
+                      {% for customer in customer %}
+                        <tr>
+                          <td>{{customer.id}}</td>
+                          <td>{{customer.user.username}}</td>
+                          <td>{{customer.first_name}}</td>
+                          <td>{{customer.middle_name}}</td>
+                          <td>{{customer.last_name}}</td>
+                          <td>{{customer.suffix}}</td>
+                          <td>{{customer.gender}}</td>
+                          <td>{{customer.contact}}</td>
+                          <td>{{customer.email}}</td>
+                          <td>{{customer.complete_address}}<br>
+                            {{customer.address_line_2}}
+                          </td>
+                          <td>{{customer.date_created}}</td>
+                          <td>{{customer.is_active}}</td>
+                          <td class="text-right">
+                            <div class="dropdown show d-inline-block widget-dropdown">
+                              <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                              <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                <li class="dropdown-item">
+                                  <a href="{% url 'core:edit_customer' customer.id %}">Edit</a>
+                                </li>
+                                <li class="dropdown-item">
+                                  <a href="#">Remove</a>
+                                </li>
+                              </ul>
+                            </div>
+                          </td>
+                        </tr>
+                      {% endfor %}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+
+  jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+</script>
+{% endblock extra_scripts %}

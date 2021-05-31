@@ -1,0 +1,194 @@
+{% extends "admin/admin.html" %} 
+{% load static %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<div class="wrapper">
+  <div class="page-wrapper">
+    <div class="content-wrapper">
+      <div class="content">
+        <div class="row">
+          <div class="col-12">
+            <div class="card card-default">
+              <div class="card-body">
+                <ul class="nav nav-tabs px-3 px-xl-5 nav-style-border" id="myTab" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link active" id="timeline-tab" data-toggle="tab" href="#timeline" role="tab" aria-controls="timeline" aria-selected="false">Admins</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Add Admin</a>
+                  </li>
+                </ul>
+                <div class="tab-content" id="myTabContent">
+                  <div class="tab-pane fade show active" id="timeline" role="tabpanel" aria-labelledby="timeline-tab">
+                    <div class="media mt-5 profile-timeline-media">
+                      <div class="hoverable-data-table">
+                        <table id="hoverable-data-table" class="table table-hover nowrap" style="width:100%">
+                          <thead>
+                            <tr>
+                              <th>ID</th>
+                              <th>Username</th>
+                              <th>First name</th>
+                              <th>Middle name</th>
+                              <th>Last name</th>
+                              <th>Suffix</th>
+                              <th>Gender</th>
+                              <th>Contact</th>
+                              <th>Email</th>
+                              <th>Address</th>
+                              <th>Active</th>
+                              <th></th>
+                            </tr>
+                          </thead>
+      
+                          <tbody>
+                            {% for admin in admins %}
+                              <tr>
+                                <td>{{admin.id}}</td>
+                                <td>{{admin.user}}</td>
+                                <td>{{admin.first_name}}</td>
+                                <td>{{admin.middle_name}}</td>
+                                <td>{{admin.last_name}}</td>
+                                <td>{{admin.suffix}}</td>
+                                <td>{{admin.gender}}</td>
+                                <td>{{admin.contact}}</td>
+                                <td>{{admin.email}}</td>
+                                <td>{{admin.complete_address}}<br>
+                                  {{admin.address_line_2}}
+                                </td>
+                                <td>{{admin.is_active}}</td>
+                                <td class="text-right">
+                                  <div class="dropdown show d-inline-block widget-dropdown">
+                                    <a class="dropdown-toggle icon-burger-mini" href="#" role="button" id="dropdown-recent-order2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" data-display="static"></a>
+                                    <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdown-recent-order2">
+                                      <li class="dropdown-item">
+                                        <a href="{% url 'core:edit_admin' admin.id %}">Edit</a>
+                                      </li>
+                                      <li class="dropdown-item">
+                                        <a href="#">Delete</a>
+                                      </li>
+                                    </ul>
+                                  </div>
+                                </td>
+                              </tr>
+                            {% endfor %}
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <form class="signup" id="signup_form" method="post">
+                      <br>
+                      {% csrf_token %}
+                      <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">  
+                          {{ form.contact|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                          {{ form.email|as_crispy_field }}
+                        </div>
+                      </div>
+                      <hr>
+                      {{ form.username|as_crispy_field }}
+                      <div class="form-row">
+                        <div class="form-group col-md-6 mb-0">  
+                          {{ form.password1|as_crispy_field }}
+                        </div>
+                        <div class="form-group col-md-6 mb-0">
+                          {{ form.password2|as_crispy_field }}
+                        </div>
+                      </div>
+                      <hr>
+                      <button type="submit" class="btn btn-primary">Add &raquo;</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <footer class="footer mt-auto">
+      <div class="copyright bg-white">
+        <p> &copy; 
+          <span id="copy-year">2021</span> Copyright Sulogoon Dashboard    
+        </p>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<div class="modal fade" id="exampleModallarge" tabindex="-1" role="dialog" aria-labelledby="exampleModalLarge" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLarge">Modal Title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form class="post-form" method="post" id="asd">
+          <br>
+          {% csrf_token %}
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-0">  
+              {{ form1|crispy }}
+            </div>
+            <div class="form-group col-md-6 mb-0">
+             
+            </div>
+          </div>
+          <hr>
+      
+          <div class="form-row">
+            <div class="form-group col-md-6 mb-0">  
+            
+            </div>
+            <div class="form-group col-md-6 mb-0">
+             
+            </div>
+          </div>
+          <hr>
+          <button type="submit" class="btn btn-primary">Add &raquo;</button>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger btn-pill" data-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary btn-pill">Save Changes</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+  jQuery(document).ready(function() {
+    jQuery('input[name="dateRange"]').daterangepicker({
+    autoUpdateInput: false,
+    singleDatePicker: true,
+    locale: {
+      cancelLabel: 'Clear'
+    }
+  });
+
+  jQuery('input[name="dateRange"]').on('apply.daterangepicker', function (ev, picker) {
+      jQuery(this).val(picker.startDate.format('MM/DD/YYYY'));
+    });
+    jQuery('input[name="dateRange"]').on('cancel.daterangepicker', function (ev, picker) {
+      jQuery(this).val('');
+    });
+  });
+
+  jQuery(document).ready(function() {
+    jQuery('#hoverable-data-table').DataTable({
+      "aLengthMenu": [[20, 30, 50, 75, -1], [20, 30, 50, 75, "All"]],
+      "pageLength": 20,
+      "dom": '<"row justify-content-between top-information"lf>rt<"row justify-content-between bottom-information"ip><"clear">'
+    });
+  });
+</script>
+{% endblock extra_scripts %}

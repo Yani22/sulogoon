@@ -1,0 +1,425 @@
+
+{% extends "base.html" %}
+{% load i18n %}
+{% block head_title %}{% trans "Address" %}{% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+
+<style type="text/css">
+  input {
+    border: 1px solid #ced4da !important;
+}
+
+input[type=text] {
+    border: 1px solid #ced4da !important;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+
+.pindicator {
+  background-color: white;
+  display: flex;
+  margin: 2rem auto 0;
+  width: 30rem;
+}
+.pindicator .bullet {
+  flex: 1;
+  position: relative;
+  text-align: center;
+  transform-style: preserve-3d;
+}
+.pindicator .bullet::before,
+.pindicator .bullet::after {
+  content: '';
+  display: block;
+  position: absolute;
+  height: .5rem;
+  top: 1.25rem;
+  transform: translate3d(0,0,-1px);
+}
+.pindicator .bullet::before {
+  background-color: lightgray;
+  width: 100%;
+}
+.pindicator .bullet::after {
+  background-color: black;
+  transition: opacity .25s ease-out;
+  opacity: 0;
+  width: 100%;
+}
+
+.pindicator .bullet:first-child::before,
+.pindicator .bullet:first-child::after {
+  left: 50%;
+  width: 50%;
+}
+.pindicator .bullet:last-child::before,
+.pindicator .bullet:last-child::after {
+  width: 50%;
+}
+
+.pindicator .icon {
+  background-color: lightgray;
+  border-radius: 100%;
+  color: transparent;
+  cursor: pointer;
+  font-size: 1.5rem;
+  display: inline-block;
+  height: 2em;
+  line-height: 2;
+  text-align: center;
+  transition: background-color .25s ease-out;
+  width: 2em;
+}
+.pindicator .text {
+  color: black;
+  font-size: .75rem;
+  margin-top: 1rem;
+  text-transform: uppercase;
+  transition: background-color .25s ease-out;
+}
+.pindicator .past .icon,
+.pindicator .current .icon {
+  background-color: black;
+  color: white;
+}
+
+.pindicator .past::after,  
+.pindicator .current::after {
+  opacity: 1;
+}
+
+.pindicator .past .text,
+.pindicator .current .text,
+.pindicator .next .text{
+  color: black;
+}
+
+ #map{
+  height: 600px;
+  width: 100%;
+}
+
+</style>
+
+
+<div class="container">
+  <div class="pindicator">
+    <div class="bullet past">
+      <span class="icon">1</span>
+      <div class="text">Personal</div>
+    </div>
+    <div class="bullet past">
+      <span class="icon">2</span>
+      <div class="text">Upload</div>
+    </div>
+    <div class="bullet current">
+      <span class="icon">3</span>
+      <div class="text">Address</div>
+    </div>
+  </div>
+
+  <h1>{% trans "Address" %}</h1>
+    <hr>
+  <strong>Whats your exact location? </strong>
+    <br>
+
+
+        <input class="search-location" id="srchBox" type="text" size="50%" placeholder="Search address" oninput="onTyping(this)"/>
+        <ul id="search-result"></ul>
+        <br>
+        <form method="POST">
+          {% csrf_token %}
+            <input type="hidden" name="lat1" id="lat1" value="{{customer.latitude}}">
+            <input type="hidden" name="lon1" id="lon1" value="{{customer.longitude}}">
+            <p>Drag the marker to your address
+            or just click/press on the map.</p>
+            <div id="map"></div>
+            <br>
+          
+            <div class="form-group mb-4">
+              <span>Complete Address:</span>
+              <input type="text" name="complete_address" required="True" placeholder="Purok, Barangay, City/Municipal, Province..">
+            </div>
+            <div class="form-group mb-4">
+              <span>Address Line 2:</span>
+              <input type="text" name="address_line_2" placeholder="Street, Building, etc..">
+            </div>
+            <p>* The address you provided above will be automatically set as your default delivery address.</p>
+            <hr>
+          <button onclick="myFunction()" type="submit" name="btnAddress" class="btn btn-primary">Save Address &raquo;</button>
+          <hr><br><br>
+        </form>
+
+  
+
+</div>
+  <!--
+  <div id="alert-box"></div>
+  <button id = "find-me">Show my location</button><br/>
+  <p id = "status"></p>
+  <a id = "map-link" target="_blank"></a>
+</div>
+-->
+{% endblock content %}
+
+{% block extra_scripts %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+   integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+   crossorigin=""/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+   integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+   crossorigin=""></script>
+<script>
+
+var lat1 = document.getElementById("lat1").value;
+  var lon1 = document.getElementById("lon1").value;
+  var mymap = L.map('map').setView([7.446954, 125.809437], 13);
+  var marker = L.marker(new L.LatLng(7.446954, 125.809437), {
+                draggable: true
+                }).addTo(mymap);
+  var popup = L.popup();
+  marker.bindPopup("<b>Drag me!</b>").openPopup();
+  marker.on('dragend', function (e) {
+    var a = marker.getLatLng().lat.toString();
+    var b = marker.getLatLng().lng.toString();
+    c = Number(a).toFixed(6);
+    d = Number(b).toFixed(6);
+    marker.bindPopup("<b>Location found.</b>").openPopup();
+    document.getElementById("lat1").value=c; 
+    document.getElementById("lon1").value=d;
+  });
+
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+  }).addTo(mymap);
+
+
+  const resultsWrapperHTML = document.getElementById("search-result")
+
+mymap.on("click", function(e){
+const {lat, lng} = e.latlng
+// regenerate marker position
+marker.setLatLng([lat, lng])
+var a = marker.getLatLng().lat.toString();
+  var b = marker.getLatLng().lng.toString();
+  c = Number(a).toFixed(6);
+  d = Number(b).toFixed(6);
+  marker.bindPopup("<b>Location found.</b>").openPopup();
+  document.getElementById("lat1").value=c; 
+  document.getElementById("lon1").value=d;
+})
+
+// search location handler
+let typingInterval 
+
+// typing handler
+function onTyping(e) {
+clearInterval(typingInterval)
+const {value} = e
+
+typingInterval = setInterval(() => {
+  clearInterval(typingInterval)
+  searchLocation(value)
+}, 500)
+}
+
+// search handler
+function searchLocation(keyword) {
+if(keyword) {
+  // request to nominatim api
+  fetch(`https://nominatim.openstreetmap.org/search?q=${keyword}&format=json`)
+    .then((response) => {
+      return response.json()
+    }).then(json => {
+     // get response data from nominatim
+     console.log("json", json)
+      if(json.length > 0) return renderResults(json)
+      else alert("Location not found.")
+  })
+}
+}
+
+// render results
+function renderResults(result) {
+let resultsHTML = ""
+
+result.map((n) => {
+  resultsHTML += `<li><a href="#" onclick="setLocation(${n.lat},${n.lon})">${n.display_name}</a></li>`
+})
+
+resultsWrapperHTML.innerHTML = resultsHTML
+}
+
+// clear results
+function clearResults() {
+resultsWrapperHTML.innerHTML = ""
+}
+
+// set location from search result
+function setLocation(lat, lon) {
+// set map focus
+mymap.setView(new L.LatLng(lat, lon), 15)
+
+// regenerate marker position
+marker.setLatLng([lat, lon])
+var a = marker.getLatLng().lat.toString();
+  var b = marker.getLatLng().lng.toString();
+  c = Number(a).toFixed(6);
+  d = Number(b).toFixed(6);
+  marker.bindPopup("<b>Location found.</b>").openPopup();
+  document.getElementById("lat1").value=c; 
+  document.getElementById("lon1").value=d;
+// clear results
+clearResults()
+}
+  function myFunction() {
+    var lat = document.getElementById("lat1").value;
+    var lon = document.getElementById("lon1").value;
+    if (lat=="None" && lon=="None" ){
+      document.getElementById("srchBox").style = "border: 5px solid red !important;";
+      marker.bindPopup("<b style='color: red; font-size: small;'>Drag me or click on the map...</b>").openPopup();
+      event.preventDefault();
+      alert("Please choose your location...")
+    }
+}
+
+</script>
+{% endblock extra_scripts %}
+
+<!--
+
+
+
+  
+
+-->
+
+  <!--
+  var map = L.map(document.getElementById('map')).setView([7.446954, 125.809437], 5);
+
+  L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token={accessToken}', {
+    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+    maxZoom: 18,
+    id: 'mapbox/streets-v11',
+    tileSize: 512,
+    zoomOffset: -1,
+    accessToken: 'pk.eyJ1IjoieWFuaWNhYnMiLCJhIjoiY2tsNnNrcDV0MXhqbjJudDdlaWw0MWp6YiJ9.dAmYJqiMrfyQWY-TJRYZyQ'
+  }).addTo(map);
+  var marker1 = L.marker(new L.LatLng(7.446954, 125.809437), {
+                draggable: true
+                }).addTo(map);
+  var popup = L.popup();
+  marker1.bindPopup("<b>Start</b>").openPopup();
+
+
+
+  map.on("click", function(e){
+const {lat, lng} = e.latlng
+// regenerate marker position
+marker.setLatLng([lat, lng])
+  var a = marker.getLatLng().lat.toString();
+  var b = marker.getLatLng().lng.toString();
+  c = Number(a).toFixed(6);
+  d = Number(b).toFixed(6);
+  marker.bindPopup("<b>Location found.</b>").openPopup();
+  document.getElementById("lat1").value=c; 
+  document.getElementById("lon1").value=d;
+  console.log("{lat:",c,", lon:",d,"},")
+})
+
+  var points = [
+        {lat: 7.446954, lon:125.809437},
+        {lat: 6.193300, lon:126.109303},
+        {lat: 7.292673, lon:127.053348},
+        {lat: 8.812975, lon:126.808833},
+        {lat: 8.192776, lon:127.597828},
+        {lat: 8.776511, lon:128.166504},
+        {lat: 7.394302, lon:128.509827},
+        {lat: 7.427837, lon:128.850403},
+
+        {lat: 8.961300 , lon: 128.855209 },
+        {lat: 7.955495 , lon: 129.849472 },
+        {lat: 8.436503 , lon: 129.355087 },
+        {lat: 8.303524 , lon: 128.844223 },
+        {lat: 8.640383 , lon: 129.668198 },
+        {lat: 9.161374 , lon: 129.410019 },
+        {lat: 9.386361 , lon: 129.973068 },
+        {lat: 8.895544 , lon: 130.261459 },
+        {lat: 8.637859 , lon: 129.667168 },
+        {lat: 8.037282 , lon: 129.977531 },
+        {lat: 8.638537 , lon: 129.670601 },
+        {lat: 8.391842 , lon: 130.586929 },
+        {lat: 8.959307 , lon: 130.433121 },
+{lat: 9.469000 , lon: 130.213394 },
+ {lat: 9.697847 , lon: 130.744858 },
+{lat: 9.264398 , lon: 131.112900 },
+{lat: 8.960664 , lon: 130.437241 },
+{lat: 8.495081 , lon: 130.742111 },
+
+
+{lat: 8.960664 , lon: 130.442734 },
+{lat: 8.803272 , lon: 131.299667 },
+{lat: 9.047471 , lon: 131.697922 },
+{lat: 9.502863 , lon: 131.420517 },
+
+{lat: 9.719505 , lon: 130.832748 },
+{lat: 9.502863 , lon: 131.420517 },
+{lat: 9.994168 , lon: 131.556473 },
+{lat: 10.109729 , lon: 131.590633 },
+
+{lat: 9.508471 , lon: 131.419487 },
+{lat: 9.052896 , lon: 131.706161 },
+//{lat: 10.851430 , lon: 131.867523 },
+
+{lat: 9.526861 , lon: 132.592621 },
+{lat: 10.851430 , lon: 131.867523 },
+{lat: 10.765099 , lon: 132.686005 },
+{lat: 11.271936 , lon: 133.004608 },
+{lat: 10.203350 , lon: 133.982391 },
+{lat: 10.994362 , lon: 134.820099 },
+{lat: 10.365497 , lon: 134.158173 },
+{lat: 10.991666 , lon: 133.411102 },
+{lat: 11.476576 , lon: 133.949432 },
+{lat: 10.991666 , lon: 133.411102 },
+{lat: 10.765099 , lon: 133.685760 },
+{lat: 11.250386 , lon: 134.048309 },
+
+    ];
+
+    var marker = null;
+    var line = L.polyline([]).addTo(map);
+
+    function redraw(point) {
+        if (!marker) {
+            marker = L.marker(point).addTo(map)
+        }
+        line.addLatLng(point);
+        marker.setLatLng(point);
+    }
+
+    function update() {
+        if (points.length) {
+            redraw(points.shift());
+            setTimeout(update, 80);
+        } else {
+          var marker2 = L.marker(new L.LatLng(11.250386, 134.048309), {
+                draggable: true
+                }).addTo(map);
+                var popup2 = L.popup();
+                marker2.bindPopup("<b>?</b>").openPopup();
+        }
+    }
+    setTimeout(update, 80);
+
+ 
+  map.fitBounds(points);
+-->

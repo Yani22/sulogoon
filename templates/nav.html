@@ -1,0 +1,476 @@
+{% load static %}
+
+{% load cart_template_tags %}
+{% load category_template_tags %}
+{% load has_group_tags %}
+
+<style>
+	.user-image{
+		width: 15px;
+	}
+	.img-circle{
+		width: 15px;
+	}
+	.topbar {
+		background-color: white;
+		color: black !important;
+	}
+	.topbar a:hover{
+		color: black;
+	}
+</style>
+<script src="{% static 'assets/plugins/nprogress/nprogress.js' %}"></script>
+	<script src="{% static 'assets/plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'assets/js/sleek.bundle.js' %}"></script>
+<!-- Header -->
+<link href="https://cdn.materialdesignicons.com/4.4.95/css/materialdesignicons.min.css" rel="stylesheet" />
+<header class="header1">
+	<!-- Header desktop -->
+	<div class="container-menu-header">
+		<div class="topbar">
+			<!--
+			<span class="topbar-child1">
+				Hello, {{request.user}}!
+			</span>
+			-->		
+		</div>
+		<div class="wrap_header">
+			<!-- Logo -->
+			<!-- Menu -->	
+		</div>
+		<nav class="navbar fixed-top navbar-expand-lg navbar-light white scrolling-navbar">
+			<div class="container">
+				<!-- Collapse -->
+				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+				  aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<!-- Links -->
+				<div class="collapse navbar-collapse" id="navbarSupportedContent">
+					<!-- Left -->
+					<ul class="navbar-nav mr-auto">
+						<a href="/" class="logo">
+							<p style="color: black; "><b style="font-size: 22px;">S</b>ULOGOON</p>
+						</a>
+						<!--
+						<li class="nav-item">
+							<a class="nav-link waves-effect pr-0" id="dropdown3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" href="#">My Dashboard
+								<i class="ion ion-ios-arrow-down"></i>
+							</a>
+							<ul class="topnav-submenu dropdown-menu" aria-labelledby="dropdown3">
+								<li class="nav-item">
+									<a class="nav-link waves-effect" href="#">
+										Dashboard</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link waves-effect" href="#">
+										Orders</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link waves-effect" href="#">
+										Settings</a>
+								</li>
+							</ul>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link waves-effect" href="/category/">Category</a>
+						</li>
+						-->
+					</ul>
+					<div class="wrap_menu">
+						<nav class="menu">
+							<ul class="main_menu">
+								<li class="nav-item">
+									<a href="/category/" class="nav-link waves-effect">
+										<i class="mdi mdi-calculator-variant"></i>
+										<span class="clearfix d-none d-sm-inline-block">Category</span>
+									</a>
+							  	</li>
+								<li class="nav-item">
+									{% if request.user.customer.is_active %}
+										<a class="nav-link waves-effect" href="/customer_dashboard/">
+											<i class="mdi mdi-file-check"></i>
+											<span class="clearfix d-none d-sm-inline-block">Dashboard</span>
+										</a>
+									{% endif %}
+									{% if request.user|has_group:"admin" %}
+										<a class="nav-link waves-effect" href="/admin_dashboard/">
+											<span class="clearfix d-none d-sm-inline-block">Dashboard</span>
+										</a>
+									{% elif request.user|has_group:"dispatcher" %}
+										<a class="nav-link waves-effect" href="/dispatch_dashboard/">
+											<span class="clearfix d-none d-sm-inline-block">Dashboard</span>
+										</a>
+									{% elif request.user|has_group:"partner" %}
+										<a class="nav-link waves-effect" href="/partner_dashboard/">
+											<span class="clearfix d-none d-sm-inline-block">Dashboard</span>
+										</a>
+									{% elif request.user|has_group:"rider" %}
+										<a class="nav-link waves-effect" href="/rider_dashboard/">
+											<span class="clearfix d-none d-sm-inline-block">Dashboard</span>
+										</a>
+									{% endif %}
+								</li>
+							</ul>
+						</nav>
+					</div>
+					<!-- Right -->
+					<ul class="navbar-nav nav-flex-icons">
+						<ul class="main_menu">
+					  		{% if request.user.customer.is_active %}
+								<li class="nav-item">
+									<a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+										<span class="red z-depth-1 mr-1"> {{ request.user|cart_item_count }}</span>
+										<i class="fas fa-shopping-cart"></i>
+										<span class="clearfix d-none d-sm-inline-block"> Cart</span>
+									</a>
+								</li>
+								<li class="dropdown user-menu">
+									<button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+										{% if request.user.customer.profile_pic %}
+											<img src="{{request.user.customer.profile_pic.url}}" class="user-image" alt="User Image" />
+										{% endif %}
+											<span class="d-none d-lg-inline-block">Hello, {{request.user}}!</span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<!-- User image -->
+										<li class="dropdown-header">
+											{% if request.user.customer.profile_pic %}
+												<img src="{{request.user.customer.profile_pic.url}}" class="img-circle" alt="User Image" />
+											{% endif %}
+											<div class="d-inline-block">
+												{{request.user.customer.first_name}} {{request.user.customer.last_name}}
+											</div>
+										</li>
+										<li>
+											<a href="/my_profile/">
+												<i class="mdi mdi-account"></i> My Profile
+											</a>
+										</li>
+										<li>
+											<a href="/customer_dashboard/">
+												<i class="mdi mdi-email"></i> Dashboard
+											</a>
+										</li>
+										<li class="dropdown-footer">
+											<a href="{% url 'account_logout' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+										</li>
+									</ul>
+								</li>
+							{% elif request.user|has_group:"rider" %}
+								<li class="nav-item">
+									<a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+										<span class="red z-depth-1 mr-1"> {{ request.user|cart_item_count }}</span>
+										<i class="fas fa-shopping-cart"></i>
+										<span class="clearfix d-none d-sm-inline-block"> Cart</span>
+									</a>
+								</li>
+								<li class="dropdown user-menu">
+									<button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+										{% if request.user.rider.profile_pic %}
+											<img src="{{request.user.rider.profile_pic.url}}" class="user-image" alt="User Image" />
+										{% endif %}
+										{% if request.user.rider.first_name %}
+											<span class="d-none d-lg-inline-block">{{request.user.rider.first_name}} {{request.user.rider.last_name}}</span>
+										{% endif %}
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<!-- User image -->
+										<li class="dropdown-header">
+											{% if request.user.rider.profile_pic %}
+												<img src="{{request.user.rider.profile_pic.url}}" class="img-circle" alt="User Image" />
+											{% endif %}
+											<div class="d-inline-block">
+												{% if request.user.rider.first_name %}
+													{{request.user.rider.first_name}} {{request.user.rider.last_name}} <small class="pt-1">{{request.user.rider.email}}</small>
+												{% endif %}
+											</div>
+										</li>
+										<li>
+											<a href="/rider_account_settings/">
+												<i class="mdi mdi-account"></i> My Profile
+											</a>
+										</li>
+										
+										<li class="right-sidebar-in">
+											<a href="javascript:0"> <i class="mdi mdi-settings"></i> Setting </a>
+										</li>
+										<li class="dropdown-footer">
+											<a href="/accounts/logout"> <i class="mdi mdi-logout"></i> Log Out </a>
+										</li>
+									</ul>
+								</li>
+							{% elif request.user|has_group:"admin" %}
+								<li class="nav-item">
+									<a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+										<span class="red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
+										<i class="fas fa-shopping-cart"></i>
+										<span class="clearfix d-none d-sm-inline-block"> Cart</span>
+									</a>
+								</li>
+								<li class="dropdown user-menu">
+									<button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+										{% if request.user.admin.profile_pic %}
+											<img src="{{request.user.admin.profile_pic.url}}" class="user-image" alt="User Image" />
+										{% endif %}
+											<span class="d-none d-lg-inline-block">Hello, {{request.user}}!</span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<!-- User image -->
+										<li class="dropdown-header">
+											{% if request.user.admin.profile_pic %}
+												<img src="{{request.user.admin.profile_pic.url}}" class="img-circle" alt="User Image" />
+											{% endif %}
+											<div class="d-inline-block">
+												{{request.user.admin.first_name}} {{request.user.admin.last_name}}
+											</div>
+										</li>
+										<li>
+											<a href="/admin_profile/">
+												<i class="mdi mdi-account"></i> My Profile
+											</a>
+										</li>
+										<li class="dropdown-footer">
+											<a href="{% url 'account_logout' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+										</li>
+									</ul>
+								</li>
+							{% elif request.user|has_group:"partner" %}
+								<li class="nav-item">
+									<a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+										<span class="red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
+										<i class="fas fa-shopping-cart"></i>
+										<span class="clearfix d-none d-sm-inline-block"> Cart</span>
+									</a>
+								</li>
+								<li class="dropdown user-menu">
+									<button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+										{% if request.user.partnerstore.profile_pic %}
+											<img src="{{request.user.partnerstore.profile_pic.url}}" class="user-image" alt="User Image" />
+										{% endif %}
+											<span class="d-none d-lg-inline-block">Hello, {{request.user}}!</span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<!-- User image -->
+										<li class="dropdown-header">
+											{% if request.user.partnerstore.profile_pic %}
+												<img src="{{request.user.partnerstore.profile_pic.url}}" class="img-circle" alt="User Image" />
+											{% endif %}
+											<div class="d-inline-block">
+												{% if request.user.partnerstore.first_name and request.user.partnerstore.last_name %}
+													{{request.user.partnerstore.first_name}} {{request.user.partnerstore.last_name}}
+													{% endif %}
+											</div>
+										</li>
+										<li>
+											<a href="/partner_profile/">
+												<i class="mdi mdi-account"></i> My Profile
+											</a>
+										</li>
+										<li class="dropdown-footer">
+											<a href="{% url 'account_logout' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+										</li>
+									</ul>
+								</li>
+								{% elif request.user|has_group:"dispatcher" %}
+								<li class="nav-item">
+									<a href="{% url 'core:order-summary' %}" class="nav-link waves-effect">
+										<span class="red z-depth-1 mr-1"> {{ request.user|cart_item_count }} </span>
+										<i class="fas fa-shopping-cart"></i>
+										<span class="clearfix d-none d-sm-inline-block"> Cart</span>
+									</a>
+								</li>
+								<li class="dropdown user-menu">
+									<button href="#" class="dropdown-toggle nav-link" data-toggle="dropdown">
+										{% if request.user.dispatcher.profile_pic %}
+											<img src="{{request.user.dispatcher.profile_pic.url}}" class="user-image" alt="User Image" />
+										{% endif %}
+											<span class="d-none d-lg-inline-block">Hello, {{request.user}}!</span>
+									</button>
+									<ul class="dropdown-menu dropdown-menu-right">
+										<!-- User image -->
+										<li class="dropdown-header">
+											{% if request.user.dispatcher.profile_pic %}
+												<img src="{{request.user.dispatcher.profile_pic.url}}" class="img-circle" alt="User Image" />
+											{% endif %}
+											<div class="d-inline-block">
+												{% if request.user.dispatcher.first_name and request.user.dispatcher.last_name %}
+													{{request.user.dispatcher.first_name}} {{request.user.dispatcher.last_name}}
+												{% endif %}
+											</div>
+										</li>
+										<li>
+											<a href="/dispatcher_account_settings/">
+												<i class="mdi mdi-account"></i> My Profile
+											</a>
+										</li>
+										<li class="dropdown-footer">
+											<a href="{% url 'account_logout' %}"> <i class="mdi mdi-logout"></i> Log Out </a>
+										</li>
+									</ul>
+								</li>
+							{% else %}
+								<li class="nav-item">
+									<a class="nav-link waves-effect" href="{% url 'account_login' %}">
+										<span class="clearfix d-none d-sm-inline-block"> Login </span>
+									</a>
+								</li>
+								<li class="nav-item">
+									<a class="nav-link waves-effect" href="{% url 'account_signup' %}">
+										<span class="clearfix d-none d-sm-inline-block"> Create an account </span>
+									</a>
+								</li>
+					  		{% endif %}
+						</ul>
+					</ul>
+				</div>
+			</div>
+		</nav>
+	</div>
+	<!-- Header Mobile -->
+	<div class="wrap_header_mobile">
+		<!-- Logo moblie -->
+		<a href="/" class="logo-mobile">
+			<img src="{% static 'images/icons/sulogoon.jpg' %}" alt="IMG-LOGO">
+		</a>
+		<!-- Button show menu -->
+		<div class="btn-show-menu">
+			<!-- Header Icon mobile -->
+			<div class="header-icons-mobile">
+				<a href="{% url 'core:customer_profile' %}" class="header-wrapicon1 dis-block">
+					<img src="{% static 'images/icons/icon-header-01.png' %}" class="header-icon1" alt="ICON">
+				</a>
+				<span class="linedivide2"></span>
+				<div class="header-wrapicon2">
+					<img src="{% static 'images/icons/icon-header-02.png' %}" class="header-icon1 js-show-header-dropdown" alt="ICON">
+					<span class="header-icons-noti">{{ request.user|cart_item_count }}</span>
+					<!-- Header cart noti -->
+					<div class="header-cart header-dropdown">
+						<ul class="header-cart-wrapitem">
+							<li class="header-cart-item">
+								<div class="header-cart-item-img">
+									<img src="{% static 'images/item-cart-01.jpg' %}" alt="IMG">
+								</div>
+								<div class="header-cart-item-txt">
+									<a href="#" class="header-cart-item-name">
+										White Shirt With Pleat Detail Back
+									</a>
+									<span class="header-cart-item-info">
+										1 x $19.00
+									</span>
+								</div>
+							</li>
+							<li class="header-cart-item">
+								<div class="header-cart-item-img">
+									<img src="{% static 'images/item-cart-02.jpg' %}" alt="IMG">
+								</div>
+								<div class="header-cart-item-txt">
+									<a href="#" class="header-cart-item-name">
+										Converse All Star Hi Black Canvas
+									</a>
+									<span class="header-cart-item-info">
+										1 x $39.00
+									</span>
+								</div>
+							</li>
+							<li class="header-cart-item">
+								<div class="header-cart-item-img">
+									<img src="{% static 'images/item-cart-03.jpg' %}" alt="IMG">
+								</div>
+								<div class="header-cart-item-txt">
+									<a href="#" class="header-cart-item-name">
+										Nixon Porter Leather Watch In Tan
+									</a>
+									<span class="header-cart-item-info">
+										1 x $17.00
+									</span>
+								</div>
+							</li>
+						</ul>
+						<div class="header-cart-total">
+							Total: $75.00
+						</div>
+						<div class="header-cart-buttons">
+							<div class="header-cart-wrapbtn">
+								<!-- Button -->
+								<a href="cart.html" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
+									View Cart
+								</a>
+							</div>
+							<div class="header-cart-wrapbtn">
+								<!-- Button -->
+								<a href="#" class="flex-c-m size1 bg1 bo-rad-20 hov1 s-text1 trans-0-4">
+									Check Out
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+				<span class="hamburger-box">
+					<span class="hamburger-inner"></span>
+				</span>
+			</div>
+		</div>
+	</div>
+	<!-- Menu Mobile -->
+	<div class="wrap-side-menu" >
+		<nav class="side-menu">
+			<ul class="main-menu">
+				<li class="item-topbar-mobile p-l-20 p-t-8 p-b-8">
+					<span class="topbar-child1">
+						Free shipping for standard order over $100
+					</span>
+				</li>
+				<li class="item-topbar-mobile p-l-20 p-t-8 p-b-8">
+					<div class="topbar-child2-mobile">
+						<span class="topbar-email">
+							fashe@example.com
+						</span>
+						<div class="topbar-language rs1-select2">
+							<select class="selection-1" name="time">
+								<option>USD</option>
+								<option>EUR</option>
+							</select>
+						</div>
+					</div>
+				</li>
+				<li class="item-topbar-mobile p-l-10">
+					<div class="topbar-social-mobile">
+						<a href="#" class="topbar-social-item fa fa-facebook"></a>
+						<a href="#" class="topbar-social-item fa fa-instagram"></a>
+						<a href="#" class="topbar-social-item fa fa-pinterest-p"></a>
+						<a href="#" class="topbar-social-item fa fa-snapchat-ghost"></a>
+						<a href="#" class="topbar-social-item fa fa-youtube-play"></a>
+					</div>
+				</li>
+				<li class="item-menu-mobile">
+					<a href="/">Home</a>
+				</li>
+				<li class="item-menu-mobile">
+					<a href="/shop">Shop</a>
+				</li>
+				{% categories_mobile %}
+				{% if request.user.is_authenticated %}
+					<li class="item-menu-mobile">
+						<a href="{% url 'core:order-summary' %}">Cart<span class="badge badge-dark">{{ request.user|cart_item_count }}</span></a>
+					</li>
+					<li class="item-menu-mobile">
+						<a href="{% url 'account_logout' %}">Logout</a>
+					</li>
+				{% else %}
+					<li class="item-menu-mobile">
+						<a href="#">Login</a>
+						<ul class="sub-menu">
+							<li><a href="{% url 'account_login' %}">Login</a></li>
+							<li><a href="{% url 'account_signup' %}">SignUp</a></li>
+						</ul>
+						<i class="arrow-main-menu fa fa-angle-right" aria-hidden="true"></i>
+					</li>
+				{% endif %}
+			</ul>
+		</nav>
+	</div>
+	
+</header>

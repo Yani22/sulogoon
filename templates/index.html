@@ -1,0 +1,163 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load category_template_tags %}
+{% load slide_template_tags %}
+{% block content %}
+<style>
+	/*[ Block2 ]
+///////////////////////////////////////////////////////////
+*/
+.block2-labelpromotion::before,
+.block2-labelsale::before,
+.block2-labelnew::before 
+{
+  z-index: 100;
+  font-family: Montserrat-Regular;
+  font-size: 12px;
+  color: white;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -moz-box;
+  display: -ms-flexbox;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 50px;
+  height: 22px;
+  border-radius: 11px;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}
+
+.block2-labelsale::before {
+  background-color: white;
+  color: #000;
+  content: 'Sale';
+}
+
+.block2-labelnew::before {
+  background-color: #007bff;
+  content: 'New';
+}
+
+.block2-labelpromotion::before{
+	background-color: #000;
+	content: 'Promotion';
+	width: 70px;
+  }
+
+  .btn-dark {
+    color: #fff;
+    background-color: #000;
+    border-color: #000;
+}
+
+.btn-outline-dark {
+    color: #000;
+    border-color: #000;
+}
+
+.newproduct{
+	margin-bottom: 2px;
+	padding-bottom: 2px;
+}
+</style>
+
+
+	<!-- Slide1 -->
+	<section class="slide1">
+		<div class="wrap-slick1">
+			<div class="slick1">
+
+				{% slides %}
+
+			</div>
+		</div>
+	</section>
+
+	<section class="newproduct bgwhite p-t-45 p-b-105">
+		<div class="container">
+
+			<!-- Slide2 -->
+			<div class="wrap-slick2">
+				<div class="slick2">
+
+					{% for partnerstores in partnerstore %}
+					
+					<div class="item-slick2 p-l-15 p-r-15">
+						<!-- Block2 -->
+						<div class="block2">
+							
+							<div class="block2-img wrap-pic-w of-hidden pos-relative block2-label{{partnerstores.get_label_display}}">
+								<a href="{{partnerstores.get_absolute_url}}">
+								<img src="{{ partnerstores.profile_pic.url }}" alt="IMG-STORE" 
+								style="height: 370px; width:100%; "></a>
+							</div>
+						
+							<div class="block2-txt p-t-20">
+								<a href="" class="block2-name dis-block s-text1 p-b-5" style="color: black;">
+									{{ partnerstores.store }}
+								</a>
+							
+								<span class="block2-name dis-block s-text3 p-b-5" style="color: black;">
+									{{ partnerstores.description }}
+								</span>																
+							</div>							
+						</div>
+					</div>
+				
+					{% endfor %}			
+				</div>
+			</div>
+		</div>
+	</section>
+
+
+	<!-- Shipping -->
+	<section class="shipping bgwhite p-t-62 p-b-46">
+		<div class="flex-w p-l-15 p-r-15">
+			<div class="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 respon1">
+				<h4 class="m-text12 t-center">
+					
+				</h4>
+
+				<a href="#" class="s-text11 t-center">
+					
+				</a>
+			</div>
+
+			<div class="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 respon1">
+				<h4 class="m-text12 t-center">
+					Store Opening
+				</h4>
+
+				<span class="s-text11 t-center">
+					Sulogoon is open from Monday to Sunday
+				</span>
+				<span class="s-text11 t-center">
+					From 8 am to 8 pm
+				</span>
+			</div>
+
+			<div class="flex-col-c w-size5 p-l-15 p-r-15 p-t-16 p-b-15 respon1">
+				<h4 class="m-text12 t-center">
+					
+				</h4>
+
+				<span class="s-text11 t-center">
+					
+				</span>
+			</div>
+		</div>
+	</section>
+
+
+
+
+	
+
+	{% endblock content %}
+
+
+	

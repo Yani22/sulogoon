@@ -1,0 +1,125 @@
+{% extends 'base1.html' %}
+{% load static %}
+{% block content %}
+
+<div id="checkout-cart" class="container">
+  <ul class="breadcrumb">
+    <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=common/home">home</a></li>
+    <li><a href="https://opencart.mahardhi.com/MT03/food/index.php?route=checkout/cart">Shopping Cart</a></li>
+  </ul>
+  <div class="row">
+    <aside id="column-left" class="col-sm-3 hidden-xs">
+      <div class="category-list">
+				<div class="box-category">
+					<h3 class="toggled relative">Categories</h3>
+					<ul class="list-unstyled parent" id="selectMe-desk">
+						<li class="has-more-category">
+							{% for cat in cat %}
+							<a href="#" class="list-group-item main-item">{{cat.title}}<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for res in res %}
+								<li>
+									<a href="{{res.get_absolute_url}}" class="list-group-item">{{res.store}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+							{% endfor %}
+						</li>
+						<li class="has-more-category">
+							<a href="#" class="list-group-item main-item">Food<span class="toggled"></span></a>
+							<ul class="list-unstyled child-categories group">
+								{% for a in item_cat %}
+								<li>
+									<a href="{{a.get_absolute_url}}" class="list-group-item">{{a.title}}</a>
+								</li>
+								{% endfor %}
+							</ul>
+						</li>
+						<li class="">
+							<a href="/others/" class="list-group-item ">Others<span></span></a>
+					</ul>
+				</div>
+			</div>
+
+			<script>
+				$(function () {
+					$(".parent .fa.fa-plus").remove();
+					$(".parent .toggled").append("<i class='fa fa-plus'></i>");
+					$('.parent .toggled').click(function (e) {
+						e.preventDefault();
+						if (!$(this).parent().hasClass('active')) {
+							$('+ ul', $('a.list-group-item.main-item')).slideUp();
+							$('a.list-group-item.main-item').removeClass('active');
+						}
+						$(this).parent().toggleClass('active');
+						$('+ ul', $(this).parent()).slideToggle('slow');
+						return false;
+					});
+				});
+			</script>
+
+    </aside>
+
+    <div id="content" class="col-sm-9 checkout">
+      <h1>Shopping Cart
+      </h1>
+      <form>
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead>
+              <tr>
+                <td class="text-center">Image</td>
+                <td class="text-left">Product Name</td>
+                <td class="text-left">Model</td>
+                <td class="text-left">Quantity</td>
+                <td class="text-right">Unit Price</td>
+                <td class="text-right">Total</td>
+              </tr>
+            </thead>
+            <tbody>
+              {% for a in object.items.all %}
+              <tr>
+                <td class="text-center"> <a href="#"><img src="{{ a.item.image.url }}" alt="Home-Style Baked Pasta"
+                      title="{{ a.item.name }}" class="img-thumbnail" /></a> </td>
+                <td class="text-left"><a href="#">{{ a.item.name }}</a> </td>
+                <td class="text-left">{{ a.item.slug }}</td>
+                <td>
+                  <a href="{% url 'core:remove-single-item-from-cart' a.item.slug %}"><i
+                      class="fas fa fa-minus mr-3"></i></a>
+                  {{ a.quantity }}
+                  <a href="{% url 'core:add-to-cart' a.item.slug %}"><i class="fas fa fa-plus ml-3"></i></a>
+                </td>
+                <td class="text-right">₱{{ a.item.price }}</td>
+                <td class="text-right">₱{{ a.get_total_item_price }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+            {% if object.get_total %}
+            <tr>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td colspan="1"><b>Order Total : </b></td>
+              <td><b>₱{{ object.get_total }}</b></td>
+            </tr>
+            <tr>
+              <td colspan="6">
+                <a href="/shop/" class="btn btn-primary float-left">Continue Shopping</a>
+                <a href="/checkout" class="btn btn-warning float-right ml-2" style="float: right;">Checkout</a>
+              </td>
+            </tr>
+            {% endif %}
+          </table>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock content %}
+
+{% block extra_scripts %}
+<script>
+</script>
+{% endblock extra_scripts %}

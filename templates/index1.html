@@ -1,0 +1,121 @@
+{% extends 'base1.html' %}
+{% load static %}
+
+{% block content %}
+
+<body class="common-home">
+    <div class="loader"></div>
+    <div id="common-home">
+        <div class="slideshow clearfix">
+            <div class="swiper-viewport">
+                <div id="slideshow0" class="swiper-container">
+                    <div class="swiper-wrapper">
+                        {% for item in slide %}
+                        <div class="swiper-slide text-center Main-banner1">
+                            <a href="#"><img src="{{item.image.url}}" alt="Main-banner1" class="img-responsive" /></a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="swiper-pagination slideshow0"></div>
+                <div class="swiper-pager">
+                    <div class="swiper-button-prev"><i class="fa fa-angle-left"></i></div>
+                    <div class="swiper-button-next"><i class="fa fa-angle-right"></i></div>
+                </div>
+            </div>
+        </div>
+        <script>
+            $('#slideshow0').swiper({
+                mode: 'horizontal',
+                slidesPerView: 1,
+                pagination: '.slideshow0',
+                paginationClickable: true,
+                nextButton: '.swiper-button-next',
+                prevButton: '.swiper-button-prev',
+                spaceBetween: 0,
+                autoplay: 4000,
+                autoplayDisableOnInteraction: true,
+                loop: true
+            });
+        </script>
+
+        <div class="mblog section box">
+            <div class="container">
+                <div class="page-title section">
+                    <h3>Restaurants</h3>
+                </div>
+                <div class="row">
+                    <div id="blogcarousel" class="blogs-block  blog-carousel  clearfix">
+                        {% for a in partnerstore %}
+                        <div class="product-layout  col-xs-12">
+                            <div class="item">
+                                <div class="product-block blog-block transition">
+                                    <div class="blog-info">
+                                        <div class="image">
+                                            <a href="#">
+                                                <img src="{{a.profile_pic.url}}" alt="" title="Consectetur adipiscing"
+                                                    class="img-responsive" style="height: 200px;" />
+                                            </a>
+                                            <div class="zoom-post">
+                                                <a class="hover-zoom" href="{{a.profile_pic.url}}"
+                                                    data-lightbox="example-set" title=""></a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="caption blog-description">
+                                        <div class="link_info">
+                                            <h4><a
+                                                    href="index158b.html?route=blog/article&amp;article_id=1">{{a.description_short}}</a>
+                                            </h4>
+                                            <div class="blog-text">
+                                                <span>{{a.description_long}}
+                                                </span>
+                                            </div>
+
+                                            <div class="blog-group clearfix">
+                                                <a class="blog-read btn"
+                                                    onclick="location.href = ('{{a.get_absolute_url}}');"
+                                                    title="Read more">View</a>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>
+            // set slider
+            const direc = $('html').attr('dir');
+
+            $('.blog-carousel').each(function () {
+                if ($(this).closest('#column-left').length == 0 && $(this).closest('#column-right').length == 0) {
+                    $(this).addClass('owl-carousel owl-theme');
+                    const items = $(this).data('items') || 3;
+                    const sliderOptions = {
+                        loop: false,
+                        nav: true,
+                        navText: ['<i class="fa fa-angle-left"></i>', '<i class="fa fa-angle-right"></i>'],
+                        dots: false,
+                        items: items,
+                        responsiveRefreshRate: 200,
+                        responsive: {
+                            0: { items: 1 },
+                            641: { items: 2 },
+                            1200: { items: items }
+                        }
+                    };
+                    if (direc == 'rtl') sliderOptions['rtl'] = true;
+                    $(this).owlCarousel(sliderOptions);
+                }
+            });
+        </script>
+    </div>
+    
+</body>
+
+{% endblock content %}
